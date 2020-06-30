@@ -20,6 +20,25 @@ All code should be generic and appropriate to an open source repo - no bundled e
 - [ ] The entrypoint should be `great_expectations` command and can be overridden in a child image if needed.
 - [ ] This image should include enough drivers to run validations against many types of datasources, including flat files, GCP backends, etc.
 
+### Building
+
+**TODO verify**
+
+- From the repo root run `docker build -t <IMAGE_REPO_AND_NAME_TBD> .`
+
+### Pushing Built Image
+
+**TODO verify**
+
+- Push built image with `docker push <IMAGE_REPO_AND_NAME_TBD>`
+
+### Running
+
+This image assumes that your project's root is mounted at `/app` so Great Expectations can find the `great_expectations` folder under `/app/great_expectations`.
+
+**TODO verify**
+
+Run this with: `docker run -v "$(pwd)":/app <IMAGE_REPO_AND_NAME_TBD:latest`
 
 ## Wemmick Docker Image
 

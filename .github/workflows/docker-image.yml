@@ -10,8 +10,15 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
-    - name: Build the vanilla Great Expectations Docker image
-      run: docker build vanilla-ge/ --file vanilla-ge/Dockerfile --tag vanilla-great_expectations:$(date +%s)
-    - name: Build the Wemmick Docker image
-      run: docker build wemmick/ --file wemmick/Dockerfile --tag wemmick:$(date +%s)
+      - name: Build and push Vanilla Great Expectations docker images
+        uses: docker/build-push-action@v1.1.0
+        with:
+          registry: hub.docker.com
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+          repository: sctay/b-test
+          tags: latest
+          path: vanilla-ge/
+          dockerfile: vanilla-ge/Dockerfile
+          add_git_labels: true
+          push: true

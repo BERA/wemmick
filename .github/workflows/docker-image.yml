@@ -11,17 +11,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-#        name: Checkout repo
-#        with:
-#          ref: ${{ github.event.pull_request.head.ref }}
-#          fetch-depth: 0
       - uses: docker/build-push-action@v1.1.0
         with:
           name: Build and push image
           registry: registry.hub.docker.com
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
-          repository: sctay/b-test
+          repository: beradev/ge
           tags: latest
           path: vanilla-ge
           dockerfile: vanilla-ge/Dockerfile

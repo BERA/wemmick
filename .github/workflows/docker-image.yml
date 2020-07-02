@@ -36,6 +36,6 @@ jobs:
           repository: beradev/ge
           tags: latest
           path: .
-          dockerfile: vanilla-ge/Dockerfile
+          dockerfile: wemmick/Dockerfile
           add_git_labels: true
           push: true

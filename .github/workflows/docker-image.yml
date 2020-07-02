@@ -19,6 +19,6 @@ jobs:
           repository: sctay/b-test
           tags: latest
           path: vanilla
-          dockerfile: vanilla/Dockerfile
+#          dockerfile: vanilla/Dockerfile
           add_git_labels: true
           push: true

@@ -1,0 +1,17 @@
+name: Docker Image CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Build the vanilla Great Expectations Docker image
+      run: docker build vanilla-ge/ --file vanilla-ge/Dockerfile --tag vanilla-great_expectations:$(date +%s)
+    - name: Build the Wemmick Docker image
+      run: docker build wemmick/ --file wemmick/Dockerfile --tag wemmick:$(date +%s)

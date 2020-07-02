@@ -22,7 +22,7 @@ jobs:
           password: ${{ secrets.DOCKER_PASSWORD }}
           repository: sctay/b-test
           tags: latest
-          path: vanilla
-#          dockerfile: vanilla/Dockerfile
+          path: vanilla-ge
+          dockerfile: vanilla-ge/Dockerfile
           add_git_labels: true
-          push: true
+          push: false

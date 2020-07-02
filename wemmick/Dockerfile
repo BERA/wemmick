@@ -1,9 +1,10 @@
-FROM vanilla-ge:latest
+FROM beradev/ge:latest
 
-RUN apt-get update && apt-get install -y make
-ADD ./dataquality/ /app/dataquality/
+RUN apt-get update
+COPY ./dataquality/ /app/dataquality/
 WORKDIR /app/dataquality
-RUN make install-for-docker
-WORKDIR /app
+RUN pip install -r requirements.txt
+RUN pip install -e .
+WORKDIR /home
 LABEL maintainer="BERA"
 ENTRYPOINT ["dataquality"]

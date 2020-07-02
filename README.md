@@ -42,6 +42,10 @@ Run this with: `docker run -v "$(pwd)":/app <IMAGE_REPO_AND_NAME_TBD:latest`
 
 ## Wemmick Docker Image
 
+### Building
+
+`docker build -t wemmick:latest -f wemmick/Dockerfile .`
+
 ### Requirements
 
 - [ ] This image should inherit from the vanilla Great Expectations image.

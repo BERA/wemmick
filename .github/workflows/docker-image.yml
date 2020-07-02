@@ -1,13 +1,14 @@
 name: Docker Image CI
 
-on:
-  push:
-    branches: [ main ]
-  pull_request:
-    branches: [ main ]
+# TODO disable for faster dev loop
+#on:
+#  push:
+#    branches: [ main ]
+#  pull_request:
+#    branches: [ main ]
 
 jobs:
-  build:
+  vanilla-ge:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -20,6 +21,22 @@ jobs:
           repository: beradev/ge
           tags: latest
           path: vanilla-ge
+          dockerfile: vanilla-ge/Dockerfile
+          add_git_labels: true
+          push: true
+  wemmick:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: docker/build-push-action@v1.1.0
+        with:
+          name: Build and push image
+          registry: registry.hub.docker.com
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+          repository: beradev/ge
+          tags: latest
+          path: .
           dockerfile: vanilla-ge/Dockerfile
           add_git_labels: true
           push: true

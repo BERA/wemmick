@@ -11,7 +11,40 @@ jobs:
   ge:
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout
+
+  ge:
+    runs-on: ubuntu-latest
+    steps:
       - uses: actions/checkout@v2
+      - uses: docker/build-push-action@v1.1.0
+        with:
+          name: Build and push image
+          registry: registry.hub.docker.com
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+          repository: beradev/wemmick
+          target: ge
+          tags: ge-0.11.7
+          dockerfile: Dockerfile
+          add_git_labels: true
+          push: false
+  wemmick:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: docker/build-push-action@v1.1.0
+        with:
+          name: Build and push image
+          registry: registry.hub.docker.com
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+          repository: beradev/wemmick
+          tag_with_ref: true
+          dockerfile: Dockerfile
+          add_git_labels: true
+          push: true
+@v2
       - uses: docker/build-push-action@v1.1.0
         with:
           name: Build and push image

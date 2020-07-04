@@ -1,67 +1,52 @@
-# wemmick
+# dataquality
 
-Wemmick is character in both Great Expectations and our data validation story.
-This project deliveries a portal GE runtime to use in our various data validation/quality checkpoints. 
+This is a small Data quality CLI written in python that includes Great Expectations extensions.
 
-All code should be generic and appropriate to an open source repo - no bundled expectations that hint at our schemata or survey structure.
+The main command in this project is `dataquality` which has many uses:
 
-## What are the requirements for this repo?
+- Create suites from AVRO files
+- Create suites from JSON Schema files
+- Run any existing expectations suite against any table in any existing datasource
 
-- [x] It is a public GH Project with CI/CD.
-- [x] It contains a docker image with vanilla Great Expectations.
-- [ ] It contains a docker image with our CLI wrapper (currently called 'dataquality' in sdap/qa).
-- [ ] It should **not** contain anything proprietary.
+## Installation
 
-## Vanilla Great Expectations Docker Image
+- Create a new python virtualenv `make venv`
+- Activate the environment by running: `source venv/bin/activate`
+- From the package root run `make install`
+- This package installs a cli command called `dataquality`. Run this to verify installation.
 
-### Requirements
+## Running commands in python
 
-- [x] This image should include pinned versions of Great Expectations.
-- [x] The entrypoint should be `great_expectations` command and can be overridden in a child image if needed.
-- [x] This image should include enough drivers to run validations against many types of datasources, including flat files, GCP backends, etc.
+- Run the CLI with `dataquality --help` to see available of commands
+- Create a suite from a JSON Schema file run `dataquality jsonschema file <YOUR_FILE.json> <SUITE_NAME>`
+- Create a suite from a AVRO Schema file run `dataquality avro file <YOUR_FILE.avsc> <SUITE_NAME>`
+- Create a suite from all AVRO Schema files matching a glob pattern run `dataquality avro glob *.avsc <SUITE_NAME>`
 
-### Building
+### Validations
 
-- From the repo root run `docker build -t beradev/ge:latest -f vanilla-ge/Dockerfile vanilla-ge`
+To run a validation use the subcommand `validation`.
 
-### Pushing Built Images
+For example, to validate the `resp.warning` expectations suite on `resp` table in the `release` database:
 
-- Push built image with `docker push beradev/ge:latest`
+```
+dataquality validate \
+--datasource release \
+--table resp
+--suite resp.warning
+```
 
-### Running
+Data source must be defined in `great_expectations.yml` file.
+Suite is the expectations suite that must exist in `./expectations` path.
 
-This image assumes that your project's root is mounted at `/home` so Great Expectations can find the `great_expectations` folder inside the container at `/home/great_expectations`.
+## Development Setup
 
-Run this with: `docker run -v "$(pwd)":/home beradev/ge:latest`
+1. Follow the installation instructions above.
+2. From the package root run `pip install -r requirements-dev.txt`
+3. Run your tests with `make test`
 
-## Wemmick Docker Image
+## Debugging / Troubleshooting
 
-### Building
+Make a new virtualenv
 
-- From the repo root run `docker build -t beradev/wemmick:latest -f wemmick/Dockerfile .`
-
-### Pushing Built Images
-
-- Push built image with `docker push beradev/wemmick:latest`
-
-### Running
-
-This image assumes that your project's root is mounted at `/home` so Great Expectations can find the `great_expectations` folder inside the container at `/home/great_expectations`.
-
-Run this with: `docker run -v "$(pwd)":/home beradev/wemmick:latest`
-
-### Requirements
-
-- [x] This image should inherit from the vanilla Great Expectations image.
-- [ ] This image should include pinned versions of `dataquality`.
-- [ ] The entrypoint should be flexible enough to run any `great_expectations` command and commands from `dataquality`.
-- [ ] This image should include the http server for use with Google Cloud Run validations.
-
-## CI/CD
-
-- [x] This repo should use the official GH action as CI/CD. It supports targets, so a single multi-stage dockerfile https://github.com/marketplace/actions/build-and-push-docker-images#target can be used.
-- [ ] This repo should use semantic release for tagging and dependabot bumping the wemmick image when there is a new base image released.
-- [ ] **Question: Should the CI/CD build and publish images to an image registry? If so, which one?**
-    - GCR for fast pull in our GCP clients. If needed, we are fine with GitHub and Docker Hub too.
-- [ ] This repo should use the GitHub super linter action against all code.
-
+1. `make venv` (this deactivates the venv, deletes it, and makes a new one)
+2. repeat development setup instructions

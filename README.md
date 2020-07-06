@@ -28,7 +28,7 @@ To run a validation use the subcommand `validation`.
 
 For example, to validate the `resp.warning` expectations suite on `resp` table in the `release` database:
 
-```
+```bash
 wemmick validate \
 --datasource release \
 --table resp

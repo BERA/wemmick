@@ -57,7 +57,7 @@ test: ## Run tests
 lint: ## Lint the entire project using black
 	black . --exclude .venv
 
-clean: clean-build clean-pyc clean-test ## remove all build, test, coverage and Python artifacts
+clean: clean-build clean-pyc clean-mypy clean-test ## remove all build, test, coverage and Python artifacts
 
 clean-build: ## Remove build artifacts
 	rm -fr build/
@@ -71,6 +71,9 @@ clean-pyc: ## Remove Python file artifacts
 	find . -name '*.pyo' -exec rm -f {} +
 	find . -name '*~' -exec rm -f {} +
 	find . -name '__pycache__' -exec rm -fr {} +
+
+clean-mypy: ## Remove mypy artifacts
+	rm -rf .mypy_cache
 
 clean-test: ## Remove test and coverage artifacts
 	rm -fr .tox/

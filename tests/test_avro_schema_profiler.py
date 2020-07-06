@@ -1,6 +1,6 @@
 import pytest
 
-from dataquality.avro_schema_profiler import AvroSchemaFileProfiler
+from wemmick.avro_schema_profiler import AvroSchemaFileProfiler
 
 
 def test_instantiable():

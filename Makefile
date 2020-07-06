@@ -42,21 +42,17 @@ help: ## Get help messages
 	@python -c "$$PRINT_HELP_PYSCRIPT" < $(MAKEFILE_LIST)
 
 github: ## Open the GitHub repo for this project
-	open https://github.com/BERA/sdap
+	open https://github.com/BERA/wemmick
 
 install: ## update your python environment
-	pip install -r requirements.txt #|| true
-	pip install -r requirements-dev.txt || true
+	pip install -r requirements-base.txt
+	pip install -r requirements-dev.txt
 	pip install -e . || true
 	pip list
 
-install-for-docker: ## install for docker builds
-	pip install -r requirements.txt
-	pip install -e .
-
 test: ## Run tests
 	pytest -s tests
-	mypy dataquality/
+	mypy src/wemmick/
 
 lint: ## Lint the entire project using black
 	black . --exclude .venv
@@ -99,7 +95,7 @@ notebooks: ## Run juypter lab for your notebooks
 	jupyter lab
 
 coverage: ## Check code coverage
-	coverage run --source dataquality -m pytest
+	coverage run --source wemmick -m pytest
 	coverage report -m
 	coverage html
 	$(BROWSER) htmlcov/index.html

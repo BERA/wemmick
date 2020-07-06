@@ -1,7 +1,7 @@
 import pytest
 import typer
 
-from dataquality.cli import avro_file, json_file
+from wemmick.cli import avro_file, json_file
 
 
 def test_json_file_raises_error_if_file_not_found():

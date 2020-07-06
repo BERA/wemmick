@@ -11,8 +11,8 @@ from pygments import highlight
 from pygments.formatters.terminal256 import Terminal256Formatter
 from pygments.lexers.data import JsonLexer
 
-from dataquality.avro_schema_profiler import AvroSchemaFileProfiler
-from dataquality.utils import file_relative_path
+from wemmick.utils import file_relative_path
+from wemmick.avro_schema_profiler import AvroSchemaFileProfiler
 
 app = typer.Typer()
 avro = typer.Typer()

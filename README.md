@@ -1,8 +1,8 @@
-# dataquality
+# wemmick
 
 This is a small Data quality CLI written in python that includes Great Expectations extensions.
 
-The main command in this project is `dataquality` which has many uses:
+The main command in this project is `wemmick` which has many uses:
 
 - Create suites from AVRO files
 - Create suites from JSON Schema files
@@ -13,14 +13,14 @@ The main command in this project is `dataquality` which has many uses:
 - Create a new python virtualenv `make venv`
 - Activate the environment by running: `source venv/bin/activate`
 - From the package root run `make install`
-- This package installs a cli command called `dataquality`. Run this to verify installation.
+- This package installs a cli command called `wemmick`. Run this to verify installation.
 
 ## Running commands in python
 
-- Run the CLI with `dataquality --help` to see available of commands
-- Create a suite from a JSON Schema file run `dataquality jsonschema file <YOUR_FILE.json> <SUITE_NAME>`
-- Create a suite from a AVRO Schema file run `dataquality avro file <YOUR_FILE.avsc> <SUITE_NAME>`
-- Create a suite from all AVRO Schema files matching a glob pattern run `dataquality avro glob *.avsc <SUITE_NAME>`
+- Run the CLI with `wemmick --help` to see available of commands
+- Create a suite from a JSON Schema file run `wemmick jsonschema file <YOUR_FILE.json> <SUITE_NAME>`
+- Create a suite from a AVRO Schema file run `wemmick avro file <YOUR_FILE.avsc> <SUITE_NAME>`
+- Create a suite from all AVRO Schema files matching a glob pattern run `wemmick avro glob *.avsc <SUITE_NAME>`
 
 ### Validations
 
@@ -29,7 +29,7 @@ To run a validation use the subcommand `validation`.
 For example, to validate the `resp.warning` expectations suite on `resp` table in the `release` database:
 
 ```
-dataquality validate \
+wemmick validate \
 --datasource release \
 --table resp
 --suite resp.warning

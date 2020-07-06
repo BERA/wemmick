@@ -1,6 +1,5 @@
 # !/usr/bin/env python
-
-from distutils.core import setup
+from setuptools import setup, find_packages
 
 with open("README.md", "r") as fh:
     long_description = fh.read()
@@ -13,11 +12,11 @@ with open("requirements-base.txt") as f:
         for line in raw_text.splitlines()
         if (not line.startswith("#")) and (not line.startswith("-"))
     ]
-    print(required_libraries)
 
 setup(
     name="wemmick",
-    packages=setuptools.find_packages(),
+    packages=find_packages(where="src"),
+    package_dir={"": "src"},
     version="0.0.1",
     description="A Great Expectations bundle for BERA",
     long_description=long_description,

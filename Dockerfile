@@ -28,6 +28,8 @@ RUN pip install --no-index --find-links=/tmp/dist/ \
       great_expectations \
       && rm -rf /tmp/dist
 
+WORKDIR /home/ge/project
+
 ENTRYPOINT ["great_expectations"]
 
 ## piggyback on ge-build's cache

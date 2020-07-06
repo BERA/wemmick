@@ -20,7 +20,6 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v2
         with:
-          # TODO add 3.8 when this bug is fixed upstream: https://github.com/great-expectations/great_expectations/issues/1651
           python-version: 3.7
       - name: Install dev dependencies
         run: |

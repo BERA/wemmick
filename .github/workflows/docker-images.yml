@@ -9,7 +9,7 @@ on:
     branches: [main]
 
 jobs:
- build:
+  build:
   - uses: azure/docker-login@v1
     with:
       login-server: gcr.io

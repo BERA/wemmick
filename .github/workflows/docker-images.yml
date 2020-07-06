@@ -1,0 +1,31 @@
+# This is the official docker action which can build and upload to any registry
+# https://github.com/docker/build-push-action
+name: Review Docker Image CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+ build:
+  - uses: azure/docker-login@v1
+    with:
+      login-server: gcr.io
+      username: ${{ secrets.GCR_USERNAME }}
+      password: ${{ secrets.GCR_PASSWORD }}
+  - uses: azure/docker-login@v1
+    with:
+      login-server: index.docker.io
+      username: ${{ secrets.DOCKERIO_USERNAME }}
+      password: ${{ secrets.DOCKERIO_PASSWORD }}
+  - run: |
+      docker build --tag ge --target ge .
+      docker build --tag wemmick .
+      docker tag ge beradev/wemmick:ge-0.11.7
+      docker tag ge gcr.io/product-id/wemmick:ge-0.11.7
+      docker tag wemmick beradev/wemmick:lastest
+      docker tag wemmick gcr.io/product-id/wemmick:${{ GITHUB_REF }}
+      [ $(git rev-parse --abbrev-ref HEAD) == 'main'] && docker images --format "{{.Repository}}:{{.Tag}}" | grep 'beradev' | xargs -n 1 docker push
+      docker images --format "{{.Repository}}:{{.Tag}}" | grep 'gcr' | xargs -n 1 docker push

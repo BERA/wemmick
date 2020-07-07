@@ -56,5 +56,5 @@ jobs:
             docker tag ge beradev/wemmick:ge-$REVISION
             docker tag wemmick beradev/wemmick:$REVISION
           fi
-          docker images --format "{{.Repository}}:{{.Tag}}" | grep 'beradev' | xargs -n 1 docker push
+         # docker images --format "{{.Repository}}:{{.Tag}}" | grep 'beradev' | xargs -n 1 docker push
 

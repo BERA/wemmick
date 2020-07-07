@@ -47,8 +47,6 @@ jobs:
           VALIDATE_JAVASCRIPT_STANDARD: true
           VALIDATE_TYPESCRIPT_ES: true
           VALIDATE_TYPESCRIPT_STANDARD: true
-          # skip for now... dockerfilelint complains about multi-stage builds https://github.com/replicatedhq/dockerfilelint/issues/100
-          VALIDATE_DOCKER: false
           VALIDATE_GO: false
           VALIDATE_POWERSHELL: true
           VALIDATE_ARM: false

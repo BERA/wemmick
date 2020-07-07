@@ -8,35 +8,88 @@ The main command in this project is `wemmick` which has many uses:
 - Create suites from JSON Schema files
 - Run any existing expectations suite against any table in any existing datasource
 
-## Installation
+This repo provides the library which can be run within a local python environment and docker images for portable runtimes.
 
-- Create a new python virtualenv `make venv`
-- Activate the environment by running: `source venv/bin/activate`
-- From the package root run `make install`
-- This package installs a cli command called `wemmick`. Run this to verify installation.
+## wemmick command reference
 
-## Running commands in python
+Note that these commands can be invoked directly in python or by invoking a docker image.
+If using docker substitute `docker run -v "$(pwd):/home/ge/project" beradev/wemmick:latest` for `wemmick` in the list below:
 
 - Run the CLI with `wemmick --help` to see available of commands
 - Create a suite from a JSON Schema file run `wemmick jsonschema file <YOUR_FILE.json> <SUITE_NAME>`
 - Create a suite from a AVRO Schema file run `wemmick avro file <YOUR_FILE.avsc> <SUITE_NAME>`
 - Create a suite from all AVRO Schema files matching a glob pattern run `wemmick avro glob *.avsc <SUITE_NAME>`
+- To run a validation use the subcommand `validation`.
+    - For example, to validate the `resp.warning` expectations suite (which is the expectations suite that must exist in `.great_expectations/expectations` directory) on `resp` table in the `release` datasource (which must be defined in `great_expectations.yml` file):
 
-### Validations
+        ```bash
+        wemmick validate \
+        --datasource release \
+        --table resp
+        --suite resp.warning
+        ```
 
-To run a validation use the subcommand `validation`.
+## Great Expectations common command reference
 
-For example, to validate the `resp.warning` expectations suite on `resp` table in the `release` database:
+Great Expectations has a full featured command line interface.
+To find out more run `great_expectations --help`. Here are a few of the most commonly used commands:
+If using docker substitute `docker run -v "$(pwd):/home/ge/project" beradev/wemmick:ge-0.11.7` for `great_expectations` in the list below:
 
-```bash
-wemmick validate \
---datasource release \
---table resp
---suite resp.warning
-```
+- Adding a new datasource: `great_expectations datasource new`
+- List datasources: `great_expectations datasource list`
+- List expectation suites: `great_expectations suite list`
+- Scaffold a new expectation suite: `great_expectations suite scaffold <SUITE_NAME>`
+- Adding a new expectations suite: `great_expectations suite new`
+- Editing expectations suite: `great_expectations suite edit <SUITE_NAME>`
+- Adding a new checkpoint: `great_expectations checkpoint new <CHECKPOINT_NAME> <SUITE_NAME>`
+- Run a checkpoint: `great_expectations checkpoint run <CHECKPOINT_NAME>`
 
-Data source must be defined in `great_expectations.yml` file.
-Suite is the expectations suite that must exist in `./expectations` path.
+
+## Docker images
+
+This project provides portable runtimes in the form of docker images.
+
+### GE images
+
+#### Running GE images
+
+Run this with: `docker run -v "$(pwd):/home/ge/project" beradev/wemmick:ge-0.11.7`
+
+This image assumes that your project's root is mounted at `/home/ge/project` so Great Expectations can find the `great_expectations` folder inside the container at `/home/ge/project/great_expectations`.
+
+#### Building GE images
+
+To build the GE image:
+    - From the repo root run `docker build -t beradev/wemmick:ge-0.11.7 -f ge/Dockerfile ge`
+
+Ideally images are only pushed from CI/CD.
+To push the GE image:
+    - run `docker push beradev/wemmick:ge-0.11.7`
+
+### Wemmick images
+
+#### Running wemmick images
+
+This image assumes that your project's root is mounted at `/home/ge/project` so Great Expectations can find the `great_expectations` folder inside the container at `/home/ge/project/great_expectations`.
+
+Run this with: `docker run -v "$(pwd):/home/ge/project" beradev/wemmick:latest`
+
+#### Building wemmick images
+
+To build the wemmick image:
+    - From the repo root run `docker build -t beradev/wemmick:latest -f wemmick/Dockerfile .`
+
+Ideally images are only pushed from CI/CD.
+To push the wemmick image:
+    - run `docker push beradev/wemmick:latest`
+
+
+## Installation via python
+
+- Create a new python virtualenv `make venv`
+- Activate the environment by running: `source venv/bin/activate`
+- From the package root run `make install`
+- This package installs a cli command called `wemmick`. Run this to verify installation.
 
 ## Development Setup
 

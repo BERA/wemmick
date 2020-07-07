@@ -18,39 +18,15 @@ All code should be generic and appropriate to an open source repo - no bundled e
 - [x] The entrypoint should be `great_expectations` command and can be overridden in a child image if needed.
 - [x] This image should include enough drivers to run validations against many types of datasources, including flat files, GCP backends, etc.
 
-### Building GE image
-
-- From the repo root run `docker build -t beradev/ge:latest -f vanilla-ge/Dockerfile vanilla-ge`
-
-### Pushing built GE image
-
-- Push built image with `docker push beradev/ge:latest`
-
-### Running GE image
-
-This image assumes that your project's root is mounted at `/home` so Great Expectations can find the `great_expectations` folder inside the container at `/home/great_expectations`.
-
-Run this with: `docker run -v "$(pwd)":/home beradev/ge:latest`
-
 ## Wemmick image
 
 - [x] This image should inherit from the vanilla Great Expectations image.
 - [x] The entrypoint should be flexible enough to run any `great_expectations` command and commands from `wemmick`.
-- [ ] This image should include the http server for use with Google Cloud Run validations.
 
-### Building wemmick image
+## Wemmick HTTP server image
 
-- From the repo root run `docker build -t beradev/wemmick:latest -f wemmick/Dockerfile .`
-
-### Pushing built wemmick image
-
-- Push built image with `docker push beradev/wemmick:latest`
-
-### Running wemmick images
-
-This image assumes that your project's root is mounted at `/home` so Great Expectations can find the `great_expectations` folder inside the container at `/home/great_expectations`.
-
-Run this with: `docker run -v "$(pwd)":/home beradev/wemmick:latest`
+- [ ] This image should inherit from the wemmick image.
+- [ ] The entrypoint should run the server process for use with Google Cloud Run validations.
 
 ## CI/CD
 

@@ -50,7 +50,7 @@ jobs:
           GE_VER=$(grep "^great_expectations" requirements-base.txt | cut -d'=' -f3-)
           REVISION=$(git rev-parse --abbrev-ref HEAD)
           if [ "$REVISION" == "main" ]; then
-            docker tag wemmick beradev/wemmick:lastest
+            docker tag wemmick beradev/wemmick:latest
             docker tag ge beradev/wemmick:ge-$GE_VER
           else
             docker tag ge beradev/wemmick:ge-$REVISION

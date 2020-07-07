@@ -1,0 +1,64 @@
+name: Lint Code Base
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  black:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v2
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.7
+      - name: Install Python linter
+        run: |
+          python -m pip install --upgrade pip
+          pip install black
+      - name: Check Python linting with black
+        run: |
+          black --check .
+
+  super:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v2
+      - name: Lint all types of files
+        uses: docker://github/super-linter:v3
+        env:
+          VALIDATE_ALL_CODEBASE: true
+          DEFAULT_BRANCH: main
+          LINTER_RULES_PATH: .
+          VALIDATE_YAML: true
+          VALIDATE_JSON: true
+          VALIDATE_XML: true
+          VALIDATE_MD: true
+          VALIDATE_BASH: true
+          VALIDATE_PERL: false
+          VALIDATE_PHP: false
+          VALIDATE_PYTHON: false # we are using black
+          VALIDATE_RUBY: true
+          VALIDATE_COFFEE: false
+          VALIDATE_ANSIBLE: true
+          VALIDATE_JAVASCRIPT_ES: true
+          VALIDATE_JAVASCRIPT_STANDARD: true
+          VALIDATE_TYPESCRIPT_ES: true
+          VALIDATE_TYPESCRIPT_STANDARD: true
+          VALIDATE_GO: false
+          VALIDATE_POWERSHELL: true
+          VALIDATE_ARM: false
+          VALIDATE_TERRAFORM: false
+          VALIDATE_CSS: true
+          VALIDATE_ENV: true
+          VALIDATE_CLOJURE: false
+          VALIDATE_HTML: true
+          VALIDATE_KOTLIN: false
+          VALIDATE_OPENAPI: false
+          VALIDATE_CLOUDFORMATION: false
+          VALIDATE_PROTOBUF: false
+          VALIDATE_EDITORCONFIG: true

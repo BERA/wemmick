@@ -1,0 +1,6 @@
+# Dev requirements
+isort
+black
+pytest
+pytest-coverage
+mypy

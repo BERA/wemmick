@@ -1,0 +1,65 @@
+name: Build and Release Docker Images
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build-release-images:
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout project
+        uses: actions/checkout@v2
+      - name: build ge
+        run: |
+          CREATED=$(date --rfc-3339=date)
+          GE_VER=$(grep "^great_expectations" requirements-base.txt | cut -d'=' -f3-)
+          slugify () {
+            next=${1//+([^A-Za-z0-9])/-}
+            next=${next:0:63}
+            next=${next,,}
+            next=${next#-}
+            next=${next%-}
+            echo "$next"
+          }
+          REVISION=$(slugify $(git rev-parse --abbrev-ref HEAD))
+          docker build --tag ge --target ge \
+            --build-arg GE_VER=$GE_VER \
+            --build-arg CREATED=$CREATED \
+            --build-arg REVISION=$REVISION \
+            .
+      - name: build wemmick
+        run: |
+          docker build --tag wemmick \
+            --build-arg GE_VER=$GE_VER \
+            --build-arg CREATED=$CREATED \
+            --build-arg REVISION=$REVISION \
+            .
+      - name: login to Dockerhub
+        uses: azure/docker-login@v1
+        with:
+          username: ${{ secrets.DOCKERIO_USERNAME }}
+          password: ${{ secrets.DOCKERIO_PASSWORD }}
+      - name: release
+        run: |
+          GE_VER=$(grep "^great_expectations" requirements-base.txt | cut -d'=' -f3-)
+          slugify () {
+            next=${1//+([^A-Za-z0-9])/-}
+            next=${next:0:63}
+            next=${next,,}
+            next=${next#-}
+            next=${next%-}
+            echo "$next"
+          }
+          REVISION=$(slugify $(git rev-parse --abbrev-ref HEAD))
+          if [ "$REVISION" == "main" ]; then
+            docker tag wemmick beradev/wemmick:latest
+            docker tag ge beradev/wemmick:ge-$GE_VER
+          else
+            docker tag ge beradev/wemmick:ge-$REVISION
+            docker tag wemmick beradev/wemmick:$REVISION
+          fi
+          docker images --format "{{.Repository}}:{{.Tag}}" | grep 'beradev' | xargs -n 1 docker push
+

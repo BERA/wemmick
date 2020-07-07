@@ -15,29 +15,31 @@ jobs:
       - name: login to Dockerhub
         uses: azure/docker-login@v1
         with:
-          login-server: gcr.io
+          login-server: index.docker.io
           registry: registry.hub.docker.com
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
-#      - name: login to GCR
-#        uses: azure/docker-login@v1
-#        with:
-#          login-server: gcr.io
-#          username: ${{ secrets.GCR_USERNAME }}
-#          password: ${{ secrets.GCR_PASSWORD }}
-#      - name: login to docker.io
-#        uses: azure/docker-login@v1
-#        with:
-#          login-server: index.docker.io
-#          username: ${{ secrets.DOCKERIO_USERNAME }}
-#          password: ${{ secrets.DOCKERIO_PASSWORD }}
+
       - name: build and push
         run: |
-          docker build --tag ge --target ge .
-          docker build --tag wemmick .
-          docker tag ge beradev/wemmick:ge-0.11.7
-          docker tag ge gcr.io/product-id/wemmick:ge-0.11.7
-          docker tag wemmick beradev/wemmick:lastest
-          docker tag wemmick gcr.io/product-id/wemmick:${{ env.GITHUB_REF }}
-          [ $(git rev-parse --abbrev-ref HEAD) == 'main'] && docker images --format "{{.Repository}}:{{.Tag}}" | grep 'beradev' | xargs -n 1 docker push
-          docker images --format "{{.Repository}}:{{.Tag}}" | grep 'gcr' | xargs -n 1 docker push
+          CREATED=$(date --rfc-3339=date)
+          GE_VER=$(grep "^great_expectations" requirements-base.txt | cut -d'=' -f3-)
+          REVISION=${GITHUB_REF#refs/heads/}
+          docker build --tag ge --target ge \
+            --build-arg GE_VER=$GE_VER \
+            --build-arg CREATED=$CREATED \
+            --build-arg REVISION=$REVISION \
+            .
+          docker build --tag wemmick \
+            --build-arg GE_VER=$GE_VER \
+            --build-arg CREATED=$CREATED \
+            --build-arg REVISION=$REVISION \
+            .
+          if [ $(git rev-parse --abbrev-ref HEAD) == 'main']; then
+            docker tag wemmick beradev/wemmick:lastest
+            docker tag ge beradev/wemmick:ge-$GE_VER
+          else
+            docker tag ge beradev/wemmick:ge-$REVISION
+            docker tag wemmick beradev/wemmick:$REVISION
+          fi
+          docker images --format "{{.Repository}}:{{.Tag}}" | grep 'beradev' | xargs -n 1 docker push

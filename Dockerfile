@@ -42,7 +42,6 @@ ENTRYPOINT ["great_expectations"]
 
 ## piggyback on ge-build's cache
 FROM ge-build as wemmick-build
-
 COPY . .
 RUN pip wheel --wheel-dir=dist -e .
 
@@ -53,8 +52,18 @@ LABEL org.opencontainers.image.title="Wemmick"
 LABEL org.opencontainers.image.description="BERA's Great Expectations runtime image"
 
 COPY --from=wemmick-build /dist/*.whl /tmp/dist/
-RUN pip install --no-index --find-links=/tmp/dist/ \
-      wemmick \
+RUN pip install --no-index --find-links=/tmp/dist/ wemmick \
       && rm -rf /tmp/dist
+COPY requirements-http.txt /tmp/
+RUN pip install -r /tmp/requirements-http.txt \
+    && rm -rf /tmp/requirements-http.txt
+COPY ./src/wemmick/server /app
 
+# Defaults overridden by Google Cloud Run
+ENV HOST="0.0.0.0" \
+    PORT=8080
+
+WORKDIR /home/ge/project
 ENTRYPOINT ["wemmick"]
+# Run server: get PORT and HOST via python and run uvicorn programatically
+#ENTRYPOINT ["/app/start_server.py"]

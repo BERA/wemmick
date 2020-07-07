@@ -44,7 +44,6 @@ If using docker substitute `docker run -v "$(pwd):/home/ge/project" beradev/wemm
 - Adding a new checkpoint: `great_expectations checkpoint new <CHECKPOINT_NAME> <SUITE_NAME>`
 - Run a checkpoint: `great_expectations checkpoint run <CHECKPOINT_NAME>`
 
-
 ## Docker images
 
 This project provides portable runtimes in the form of docker images.
@@ -72,7 +71,14 @@ To push the GE image:
 
 This image assumes that your project's root is mounted at `/home/ge/project` so Great Expectations can find the `great_expectations` folder inside the container at `/home/ge/project/great_expectations`.
 
-Run this with: `docker run -v "$(pwd):/home/ge/project" beradev/wemmick:latest`
+**To use this image as a Great Expectations CLI:**
+- run this with: `docker run -v "$(pwd):/home/ge/project" --entrypoint great_expectations beradev/wemmick:latest`
+
+**To use this image as a CLI:**
+- run this with: `docker run -v "$(pwd):/home/ge/project" beradev/wemmick:latest`
+
+**To use this image as an HTTP server:**
+- run this with: `docker run -p 8080:8080 -v "$(pwd):/home/ge/project" --entrypoint /app/start_server.py beradev/wemmick:latest`
 
 #### Building wemmick images
 
@@ -82,7 +88,6 @@ To build the wemmick image:
 Ideally images are only pushed from CI/CD.
 To push the wemmick image:
     - run `docker push beradev/wemmick:latest`
-
 
 ## Installation via python
 

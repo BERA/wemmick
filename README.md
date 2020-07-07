@@ -20,14 +20,14 @@ If using docker substitute `docker run -v "$(pwd):/home/ge/project" beradev/wemm
 - Create a suite from a AVRO Schema file run `wemmick avro file <YOUR_FILE.avsc> <SUITE_NAME>`
 - Create a suite from all AVRO Schema files matching a glob pattern run `wemmick avro glob *.avsc <SUITE_NAME>`
 - To run a validation use the subcommand `validation`.
-    - For example, to validate the `resp.warning` expectations suite (which is the expectations suite that must exist in `.great_expectations/expectations` directory) on `resp` table in the `release` datasource (which must be defined in `great_expectations.yml` file):
+  - For example, to validate the `resp.warning` expectations suite (which is the expectations suite that must exist in `.great_expectations/expectations` directory) on `resp` table in the `release` datasource (which must be defined in `great_expectations.yml` file):
 
-        ```bash
-        wemmick validate \
-        --datasource release \
-        --table resp
-        --suite resp.warning
-        ```
+    ```bash
+    wemmick validate \
+    --datasource release \
+    --table resp
+    --suite resp.warning
+    ```
 
 ## Great Expectations common command reference
 

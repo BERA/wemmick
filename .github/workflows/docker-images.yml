@@ -36,7 +36,6 @@ jobs:
           registry: registry.hub.docker.com
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
-      - name: release
         run: |
           GE_VER=$(grep "^great_expectations" requirements-base.txt | cut -d'=' -f3-)
           REVISION=$(git rev-parse --abbrev-ref HEAD)

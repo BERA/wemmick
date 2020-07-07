@@ -7,19 +7,11 @@ on:
     branches: [main]
 
 jobs:
-  build:
+  build-images:
     runs-on: ubuntu-latest
     steps:
       - name: checkout project
         uses: actions/checkout@v2
-      - name: login to Dockerhub
-        uses: azure/docker-login@v1
-        with:
-          login-server: index.docker.io
-          registry: registry.hub.docker.com
-          username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKER_PASSWORD }}
-
       - name: build ge
         run: |
           CREATED=$(date --rfc-3339=date)
@@ -32,13 +24,31 @@ jobs:
             .
       - name: build wemmick
         run: |
-          echo $CREATED
+          echo $CREATED 
           docker build --tag wemmick \
             --build-arg GE_VER=$GE_VER \
             --build-arg CREATED=$CREATED \
             --build-arg REVISION=$REVISION \
             .
-      - name: release 
+  release-images:
+    runs-on: ubuntu-latest
+    needs:
+      build-images
+    steps:
+      - name: checkout project
+        uses: actions/checkout@v2
+      - name: login to Dockerhub
+        uses: azure/docker-login@v1
+        with:
+          login-server: index.docker.io
+          registry: registry.hub.docker.com
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+      - name: release
+        run: |
+          CREATED=$(date --rfc-3339=date)
+          GE_VER=$(grep "^great_expectations" requirements-base.txt | cut -d'=' -f3-)
+          REVISION=${GITHUB_REF#refs/heads/}
           if [ $(git rev-parse --abbrev-ref HEAD) == 'main']; then
             docker tag wemmick beradev/wemmick:lastest
             docker tag ge beradev/wemmick:ge-$GE_VER
@@ -47,3 +57,4 @@ jobs:
             docker tag wemmick beradev/wemmick:$REVISION
           fi
           docker images --format "{{.Repository}}:{{.Tag}}" | grep 'beradev' | xargs -n 1 docker push
+

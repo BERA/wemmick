@@ -7,7 +7,7 @@ on:
     branches: [main]
 
 jobs:
-  build-images:
+  build-release-images:
     runs-on: ubuntu-latest
     steps:
       - name: checkout project
@@ -24,19 +24,11 @@ jobs:
             .
       - name: build wemmick
         run: |
-          echo $CREATED
           docker build --tag wemmick \
             --build-arg GE_VER=$GE_VER \
             --build-arg CREATED=$CREATED \
             --build-arg REVISION=$REVISION \
             .
-  release-images:
-    runs-on: ubuntu-latest
-    needs:
-      build-images
-    steps:
-      - name: checkout project
-        uses: actions/checkout@v2
       - name: login to Dockerhub
         uses: azure/docker-login@v1
         with:
@@ -44,6 +36,8 @@ jobs:
           registry: registry.hub.docker.com
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
+      - name: release
+        uses: azure/docker-login@v1
         run: |
           GE_VER=$(grep "^great_expectations" requirements-base.txt | cut -d'=' -f3-)
           REVISION=$(git rev-parse --abbrev-ref HEAD)

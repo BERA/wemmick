@@ -16,7 +16,15 @@ jobs:
         run: |
           CREATED=$(date --rfc-3339=date)
           GE_VER=$(grep "^great_expectations" requirements-base.txt | cut -d'=' -f3-)
-          REVISION=${GITHUB_REF#refs/heads/}
+          slugify () {
+            next=${1//+([^A-Za-z0-9])/-}
+            next=${next:0:63}
+            next=${next,,}
+            next=${next#-}
+            next=${next%-}
+            echo "$next"
+          }
+          REVISION=$(slugify $(git rev-parse --abbrev-ref HEAD))
           docker build --tag ge --target ge \
             --build-arg GE_VER=$GE_VER \
             --build-arg CREATED=$CREATED \

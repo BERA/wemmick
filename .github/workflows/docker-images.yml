@@ -1,4 +1,4 @@
-name: Build and Deploy Docker Image CI
+name: Build and Release Docker Images
 
 on:
   push:
@@ -20,7 +20,7 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
-      - name: build and push
+      - name: build ge
         run: |
           CREATED=$(date --rfc-3339=date)
           GE_VER=$(grep "^great_expectations" requirements-base.txt | cut -d'=' -f3-)
@@ -30,11 +30,15 @@ jobs:
             --build-arg CREATED=$CREATED \
             --build-arg REVISION=$REVISION \
             .
+      - name: build wemmick
+        run: |
+          echo $CREATED
           docker build --tag wemmick \
             --build-arg GE_VER=$GE_VER \
             --build-arg CREATED=$CREATED \
             --build-arg REVISION=$REVISION \
             .
+      - name: release 
           if [ $(git rev-parse --abbrev-ref HEAD) == 'main']; then
             docker tag wemmick beradev/wemmick:lastest
             docker tag ge beradev/wemmick:ge-$GE_VER

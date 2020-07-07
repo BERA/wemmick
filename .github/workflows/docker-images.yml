@@ -39,7 +39,15 @@ jobs:
       - name: release
         run: |
           GE_VER=$(grep "^great_expectations" requirements-base.txt | cut -d'=' -f3-)
-          REVISION=$(git rev-parse --abbrev-ref HEAD)
+          slugify () {
+            next=${1//+([^A-Za-z0-9])/-}
+            next=${next:0:63}
+            next=${next,,}
+            next=${next#-}
+            next=${next%-}
+            echo "$next"
+          }
+          REVISION=$(slugify $(git rev-parse --abbrev-ref HEAD))
           if [ "$REVISION" == "main" ]; then
             docker tag wemmick beradev/wemmick:latest
             docker tag ge beradev/wemmick:ge-$GE_VER
@@ -47,6 +55,5 @@ jobs:
             docker tag ge beradev/wemmick:ge-$REVISION
             docker tag wemmick beradev/wemmick:$REVISION
           fi
-          docker push beradev/wemmick:ge
           docker images --format "{{.Repository}}:{{.Tag}}" | grep 'beradev' | xargs -n 1 docker push
 

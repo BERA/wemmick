@@ -108,3 +108,10 @@ Make a new virtualenv
 
 1. `make venv` (this deactivates the venv, deletes it, and makes a new one)
 2. repeat development setup instructions
+
+
+## Misc deployment notes
+
+- Google Cloud Run has a limit of 15 minutes of execution.
+- Cloud Run also assumes containers are stateless, therefore we store Great Expectations `Validation Results` on GCS in production.
+

@@ -1,0 +1,15 @@
+.dockerfilelintrc
+.editorconfig
+*.env
+.git
+.github
+.gitignore
+.idea
+.isort.cfg
+.mypy.ini
+.mypy_cache
+.venv
+Makefile
+Dockerfile
+docs
+tests

@@ -47,7 +47,8 @@ github: ## Open the GitHub repo for this project
 install: ## update your python environment
 	pip install -r requirements-base.txt
 	pip install -r requirements-dev.txt
-	pip install -e . || true
+	pip install -r requirements-http.txt
+	pip install -e .
 	pip list
 
 test: ## Run tests

@@ -1,0 +1,3 @@
+# HTTP server requirements
+fastapi==0.58.1
+uvicorn==0.11.5

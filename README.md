@@ -13,7 +13,7 @@ This repo provides the library which can be run within a local python environmen
 ## wemmick command reference
 
 Note that these commands can be invoked directly in python or by invoking a docker image.
-If using docker substitute `docker run -v "$(pwd):/home/ge/project" beradev/wemmick:latest` for `wemmick` in the list below:
+If using docker substitute `docker run -v "$(pwd):/ge" beradev/wemmick:latest` for `wemmick` in the list below:
 
 - Run the CLI with `wemmick --help` to see available of commands
 - Create a suite from a JSON Schema file run `wemmick jsonschema file <YOUR_FILE.json> <SUITE_NAME>`
@@ -33,7 +33,7 @@ If using docker substitute `docker run -v "$(pwd):/home/ge/project" beradev/wemm
 
 Great Expectations has a full featured command line interface.
 To find out more run `great_expectations --help`. Here are a few of the most commonly used commands:
-If using docker substitute `docker run -v "$(pwd):/home/ge/project" beradev/wemmick:ge-0.11.7` for `great_expectations` in the list below:
+If using docker substitute `docker run -v "$(pwd):/ge" beradev/wemmick:ge-0.11.7` for `great_expectations` in the list below:
 
 - Adding a new datasource: `great_expectations datasource new`
 - List datasources: `great_expectations datasource list`
@@ -44,7 +44,6 @@ If using docker substitute `docker run -v "$(pwd):/home/ge/project" beradev/wemm
 - Adding a new checkpoint: `great_expectations checkpoint new <CHECKPOINT_NAME> <SUITE_NAME>`
 - Run a checkpoint: `great_expectations checkpoint run <CHECKPOINT_NAME>`
 
-
 ## Docker images
 
 This project provides portable runtimes in the form of docker images.
@@ -53,9 +52,9 @@ This project provides portable runtimes in the form of docker images.
 
 #### Running GE images
 
-Run this with: `docker run -v "$(pwd):/home/ge/project" beradev/wemmick:ge-0.11.7`
+Run this with: `docker run -v "$(pwd):/ge" beradev/wemmick:ge-0.11.7`
 
-This image assumes that your project's root is mounted at `/home/ge/project` so Great Expectations can find the `great_expectations` folder inside the container at `/home/ge/project/great_expectations`.
+This image assumes that your project's root is mounted at `/ge` so Great Expectations can find the `great_expectations` folder inside the container at `/ge/great_expectations`.
 
 #### Building GE images
 
@@ -70,9 +69,16 @@ To push the GE image:
 
 #### Running wemmick images
 
-This image assumes that your project's root is mounted at `/home/ge/project` so Great Expectations can find the `great_expectations` folder inside the container at `/home/ge/project/great_expectations`.
+This image assumes that your project's root is mounted at `/ge` so Great Expectations can find the `great_expectations` folder inside the container at `/ge/great_expectations`.
 
-Run this with: `docker run -v "$(pwd):/home/ge/project" beradev/wemmick:latest`
+**To use this image as a Great Expectations CLI:**
+- run this with: `docker run -v "$(pwd):/ge" --entrypoint great_expectations beradev/wemmick:latest`
+
+**To use this image as a CLI:**
+- run this with: `docker run -v "$(pwd):/ge" beradev/wemmick:latest`
+
+**To use this image as an HTTP server:**
+- run this with: `docker run -p 8080:8080 -v "$(pwd):/ge" --entrypoint /app/src/wemmick/start_server.py beradev/wemmick:latest`
 
 #### Building wemmick images
 
@@ -82,7 +88,6 @@ To build the wemmick image:
 Ideally images are only pushed from CI/CD.
 To push the wemmick image:
     - run `docker push beradev/wemmick:latest`
-
 
 ## Installation via python
 
@@ -103,3 +108,10 @@ Make a new virtualenv
 
 1. `make venv` (this deactivates the venv, deletes it, and makes a new one)
 2. repeat development setup instructions
+
+
+## Misc deployment notes
+
+- Google Cloud Run has a limit of 15 minutes of execution.
+- Cloud Run also assumes containers are stateless, therefore we store Great Expectations `Validation Results` on GCS in production.
+

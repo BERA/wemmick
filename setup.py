@@ -4,22 +4,17 @@ from setuptools import setup, find_packages
 with open("README.md", "r") as fh:
     long_description = fh.read()
 
-# Parse requirements.txt
-with open("requirements-base.txt") as f:
-    raw_text = f.read()
-    required_libraries = [
-        line
-        for line in raw_text.splitlines()
-        if (not line.startswith("#")) and (not line.startswith("-"))
-    ]
 
-with open("requirements-http.txt") as f:
-    raw_text = f.read()
-    required_libraries.append([
-        line
-        for line in raw_text.splitlines()
-        if (not line.startswith("#")) and (not line.startswith("-"))
-    ])
+def parse_requirements(filename):
+    with open(filename) as f:
+        raw_text = f.read()
+        required_libraries = [
+            line
+            for line in raw_text.splitlines()
+            if (not line.startswith("#")) and (not line.startswith("-"))
+        ]
+    return required_libraries
+
 
 setup(
     name="wemmick",
@@ -31,7 +26,7 @@ setup(
     long_description_content_type="text/markdown",
     author="BERA",
     url="https://github.com/BERA/wemmick",
-    install_requires=required_libraries,
+    install_requires=parse_requirements("requirements-base.txt"),
     entry_points={"console_scripts": ["wemmick=wemmick.cli:app"]},
     include_package_data=True,
 )

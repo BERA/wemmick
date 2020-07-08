@@ -8,7 +8,7 @@ typer==0.3.0
 # Cloud providers
 google-cloud==0.34.0
 google-cloud-secret-manager==1.0.0
-google-cloud-storage==1.28.1
+google-cloud-storage==1.29.0
 
 # SQL Drivers
 pybigquery==0.4.15

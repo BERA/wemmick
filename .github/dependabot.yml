@@ -1,0 +1,13 @@
+# Basic dependabot.yml file https://docs.github.com/en/github/administering-a-repository/enabling-and-disabling-version-updates
+
+version: 2
+updates:
+  - package-ecosystem: "pip"
+    directory: "/"
+    schedule:
+      interval: "daily"
+
+  - package-ecosystem: "docker"
+    directory: "/"
+    schedule:
+      interval: "weekly"

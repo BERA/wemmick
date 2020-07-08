@@ -3,7 +3,7 @@ great_expectations==0.11.7
 # wemmick
 click-spinner==0.1.10
 Pygments==2.6.1
-typer==0.2.1
+typer==0.3.0
 
 # Cloud providers
 google-cloud==0.34.0

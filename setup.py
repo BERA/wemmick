@@ -13,6 +13,14 @@ with open("requirements-base.txt") as f:
         if (not line.startswith("#")) and (not line.startswith("-"))
     ]
 
+with open("requirements-http.txt") as f:
+    raw_text = f.read()
+    required_libraries.append([
+        line
+        for line in raw_text.splitlines()
+        if (not line.startswith("#")) and (not line.startswith("-"))
+    ])
+
 setup(
     name="wemmick",
     packages=find_packages(where="src"),

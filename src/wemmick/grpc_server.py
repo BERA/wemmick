@@ -14,19 +14,27 @@ class Wemmick(wemmick_pb2_grpc.WemmickServicer):
     def ListDataSources(self, request, context):
         data_sources = api.list_datasources()
         result = []
-        for data_source in data_sources:
+        for data_source_item in data_sources:
             credentials = wemmick_pb2.DataSource.Credentials(
-                connection_string=data_source['credentials']['connection_string']
+                connection_string=data_source_item['credentials']['connection_string']
             )
             data_source = wemmick_pb2.DataSource(
-                name=data_source['name'],
-                class_name=data_source['class_name'],
-                module_name=data_source['module_name'],
+                name=data_source_item['name'],
+                class_name=data_source_item['class_name'],
+                module_name=data_source_item['module_name'],
                 credentials=credentials
             )
             result.append(data_source)
 
         return wemmick_pb2.DataSourceList(data_sources=result)
+
+    def ListExpectationSuites(self, request, context):
+        suites = api.list_expectation_suites()
+        result = []
+        for suite_item in suites:
+            result.append(suite_item.expectation_suite_name)
+
+        return wemmick_pb2.ExpectationSuitesList(expectation_suites=result)
 
 
 def serve():

@@ -6,6 +6,7 @@ package wemmick;
 service Wemmick {
   rpc HelloWorld (google.protobuf.Empty) returns (Response) {};
   rpc ListDataSources (google.protobuf.Empty) returns (DataSourceList) {};
+  rpc ListExpectationSuites (google.protobuf.Empty) returns (ExpectationSuitesList) {};
 }
 
 message Request {}
@@ -26,5 +27,9 @@ message DataSource {
 }
 
 message DataSourceList {
-    repeated DataSource data_sources = 1;
+  repeated DataSource data_sources = 1;
+}
+
+message ExpectationSuitesList {
+  repeated string expectation_suites = 1;
 }

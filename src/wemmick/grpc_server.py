@@ -3,11 +3,30 @@ import grpc
 from grpc_reflection.v1alpha import reflection
 import wemmick_pb2
 import wemmick_pb2_grpc
+import api
 
 
 class Wemmick(wemmick_pb2_grpc.WemmickServicer):
+
     def HelloWorld(self, request, context):
-        return wemmick_pb2.HelloWorld(message='Hello World!')
+        return wemmick_pb2.Response(message='Hello World!')
+
+    def ListDataSources(self, request, context):
+        data_sources = api.list_datasources()
+        result = []
+        for data_source in data_sources:
+            credentials = wemmick_pb2.DataSource.Credentials(
+                connection_string=data_source['credentials']['connection_string']
+            )
+            data_source = wemmick_pb2.DataSource(
+                name=data_source['name'],
+                class_name=data_source['class_name'],
+                module_name=data_source['module_name'],
+                credentials=credentials
+            )
+            result.append(data_source)
+
+        return wemmick_pb2.DataSourceList(data_sources=result)
 
 
 def serve():

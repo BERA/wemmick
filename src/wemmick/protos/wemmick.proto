@@ -1,15 +1,30 @@
 syntax = "proto3";
 
+import "google/protobuf/empty.proto";
 package wemmick;
 
 service Wemmick {
-  rpc HelloWorld (HelloRequest) returns (HelloReply) {}
+  rpc HelloWorld (google.protobuf.Empty) returns (Response) {};
+  rpc ListDataSources (google.protobuf.Empty) returns (DataSourceList) {};
 }
 
-message HelloRequest {
-  string name = 1;
-}
+message Request {}
 
-message HelloReply {
+message Response {
   string message = 1;
+}
+
+message DataSource {
+  message Credentials {
+    string connection_string = 1;
+  };
+
+  string name = 1;
+  string class_name = 2;
+  string module_name = 3;
+  Credentials credentials = 4;
+}
+
+message DataSourceList {
+    repeated DataSource data_sources = 1;
 }

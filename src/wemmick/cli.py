@@ -13,6 +13,7 @@ from pygments.lexers.data import JsonLexer
 
 from wemmick.utils import file_relative_path
 from wemmick.avro_schema_profiler import AvroSchemaFileProfiler
+from wemmick.api import CreateExpectationSuiteFromJsonSchema
 
 app = typer.Typer()
 avro = typer.Typer()
@@ -51,7 +52,7 @@ def validate(
         typer.secho("validation failed", fg=typer.colors.BRIGHT_RED)
         sys.exit(1)
 
-    typer.secho("validtion succeeded", fg=typer.colors.BRIGHT_GREEN)
+    typer.secho("validation succeeded", fg=typer.colors.BRIGHT_GREEN)
     sys.exit(0)
 
 
@@ -99,47 +100,77 @@ def avro_glob(pattern: str, verbose: bool = False):
     typer.secho(f"Processed {len(suites)} avro files.", fg=typer.colors.BRIGHT_GREEN)
 
 
+class CLICreateExpectationSuiteFromJsonSchema(CreateExpectationSuiteFromJsonSchema):
+    def get_data_context(self):
+        typer.echo("Loading Great Expectations project...")
+        with click_spinner.spinner():
+            data_context = super().get_data_context()
+        return data_context
+
+    def get_json_schema(self):
+        typer.echo("Loading schema...")
+        with click_spinner.spinner():
+            json_schema = super().get_json_schema()
+        return json_schema
+
+    def create_suite(self, context, json_schema: str, suite_name: str):
+        typer.echo("Generating suite...")
+        with click_spinner.spinner():
+            super().create_suite(context, json_schema=json_schema, suite_name=suite_name)
+
+    def build_docs(self, context):
+        typer.echo("Building docs...")
+        with click_spinner.spinner():
+            super().build_docs(context)
+
+
 @jsonschema.command(name="file")
 def json_file(filename: str, suite_name: str, verbose: bool = False):
     """Create an Expectation Suite from a JSONSchema file."""
-    if not os.path.isfile(filename):
-        typer.secho(
-            f"File {filename} was not found. Please check the path and try again.",
-            fg=typer.colors.BRIGHT_RED,
-        )
-        raise typer.Abort()
+    create_suite = CLICreateExpectationSuiteFromJsonSchema(json_file_path=filename, suite_name=suite_name)
+    create_suite.run()
 
-    typer.echo("Loading Great Expectations project...")
-    with click_spinner.spinner():
-        try:
-            context = ge.data_context.DataContext()
-        except ge.exceptions.GreatExpectationsError as e:
-            typer.secho(e.message, fg=typer.colors.BRIGHT_RED)
-            raise typer.Abort()
-
-    typer.echo("Loading schema...")
-    with open(filename, "r") as f:
-        try:
-            raw_json = f.read()
-            schema = json.loads(raw_json)
-        except json.decoder.JSONDecodeError as e:
-            typer.secho(f"JSON Failed to parse: {e}", fg=typer.colors.BRIGHT_RED)
-            raise typer.Abort()
-        if verbose:
-            typer.echo(highlight(raw_json, JsonLexer(), Terminal256Formatter()))
-
-    typer.echo("Generating suite...")
-    with click_spinner.spinner():
-        profiler = JsonSchemaProfiler()
-        suite = profiler.profile(schema, suite_name)
-        context.save_expectation_suite(suite)
-        if verbose:
-            typer.echo(highlight(str(suite), JsonLexer(), Terminal256Formatter()))
-
-    typer.echo("Building docs...")
-    with click_spinner.spinner():
-        context.build_data_docs()
-        context.open_data_docs()
+# @jsonschema.command(name="file")
+# def json_file(filename: str, suite_name: str, verbose: bool = False):
+#     """Create an Expectation Suite from a JSONSchema file."""
+#     if not os.path.isfile(filename):
+#         typer.secho(
+#             f"File {filename} was not found. Please check the path and try again.",
+#             fg=typer.colors.BRIGHT_RED,
+#         )
+#         raise typer.Abort()
+#
+#     typer.echo("Loading Great Expectations project...")
+#     with click_spinner.spinner():
+#         try:
+#             context = ge.data_context.DataContext()
+#         except ge.exceptions.GreatExpectationsError as e:
+#             typer.secho(e.message, fg=typer.colors.BRIGHT_RED)
+#             raise typer.Abort()
+#
+#     typer.echo("Loading schema...")
+#     with open(filename, "r") as f:
+#         try:
+#             raw_json = f.read()
+#             schema = json.loads(raw_json)
+#         except json.decoder.JSONDecodeError as e:
+#             typer.secho(f"JSON Failed to parse: {e}", fg=typer.colors.BRIGHT_RED)
+#             raise typer.Abort()
+#         if verbose:
+#             typer.echo(highlight(raw_json, JsonLexer(), Terminal256Formatter()))
+#
+#     typer.echo("Generating suite...")
+#     with click_spinner.spinner():
+#         profiler = JsonSchemaProfiler()
+#         suite = profiler.profile(schema, suite_name)
+#         context.save_expectation_suite(suite)
+#         if verbose:
+#             typer.echo(highlight(str(suite), JsonLexer(), Terminal256Formatter()))
+#
+#     typer.echo("Building docs...")
+#     with click_spinner.spinner():
+#         context.build_data_docs()
+#         context.open_data_docs()
 
 
 if __name__ == "__main__":

@@ -7,6 +7,7 @@ service Wemmick {
   rpc HelloWorld (google.protobuf.Empty) returns (Response) {};
   rpc ListDataSources (google.protobuf.Empty) returns (DataSourceList) {};
   rpc ListExpectationSuites (google.protobuf.Empty) returns (ExpectationSuitesList) {};
+  rpc CreateExpectationSuiteFromJsonSchema (CreateExpectationSuiteRequest) returns (Response) {};
 }
 
 message Request {}
@@ -32,4 +33,9 @@ message DataSourceList {
 
 message ExpectationSuitesList {
   repeated string expectation_suites = 1;
+}
+
+message CreateExpectationSuiteRequest {
+  string json_file_path = 1;
+  string suite_name = 2;
 }

@@ -36,6 +36,10 @@ class Wemmick(wemmick_pb2_grpc.WemmickServicer):
 
         return wemmick_pb2.ExpectationSuitesList(expectation_suites=result)
 
+    def CreateExpectationSuiteFromJsonSchema(self, request, context):
+        api.create_expectation_suite_from_json_schema(json_file_path=request.json_file_path, suite_name=request.suite_name)
+        return wemmick_pb2.Response(message=f'Successfully create {request.suite_name} suite')
+
 
 def serve():
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))

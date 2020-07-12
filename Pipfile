@@ -8,7 +8,7 @@ pytest = "*"
 grpcio-tools = "*"
 
 [packages]
-typer = "*"
+typer = "==0.2.1"
 click-spinner = "*"
 pygments = "*"
 google-cloud-storage = "*"

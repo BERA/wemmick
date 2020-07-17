@@ -37,7 +37,18 @@ class Wemmick(wemmick_pb2_grpc.WemmickServicer):
         return wemmick_pb2.ExpectationSuitesList(expectation_suites=result)
 
     def CreateExpectationSuiteFromJsonSchema(self, request, context):
-        create_suite = wemmick.api.CreateExpectationSuiteFromJsonSchema(json_file_path=request.json_file_path, suite_name=request.suite_name)
+        create_suite = wemmick.api.CreateExpectationSuiteFromJsonSchema(
+            file_path=request.file_path,
+            suite_name=request.suite_name
+        )
+        create_suite.run()
+        return wemmick_pb2.Response(message=f'Successfully created {request.suite_name} expectation suite')
+
+    def CreateExpectationSuiteFromAvroSchema(self, request, context):
+        create_suite = wemmick.api.CreateExpectationSuiteFromAvroSchema(
+            file_path=request.file_path,
+            suite_name=request.suite_name
+        )
         create_suite.run()
         return wemmick_pb2.Response(message=f'Successfully created {request.suite_name} expectation suite')
 

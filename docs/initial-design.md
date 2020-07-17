@@ -9,7 +9,7 @@ All code should be generic and appropriate to an open source repo - no bundled e
 
 - [x] It is a public GH Project with CI/CD.
 - [x] It contains a docker image with vanilla Great Expectations.
-- [x] It contains a docker image with our CLI wrapper (currently called 'wemmick' in sdap/qa).
+- [x] It contains a docker image with our CLI wrapper
 - [x] It should **not** contain anything proprietary.
 
 ## Vanilla Great Expectations Docker Image

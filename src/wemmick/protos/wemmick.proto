@@ -9,6 +9,7 @@ service Wemmick {
   rpc ListExpectationSuites (google.protobuf.Empty) returns (ExpectationSuitesList) {};
   rpc CreateExpectationSuiteFromJsonSchema (CreateExpectationSuiteRequest) returns (Response) {};
   rpc CreateExpectationSuiteFromAvroSchema (CreateExpectationSuiteRequest) returns (Response) {};
+  rpc RunValidation (RunValidationRequest) returns (Response) {};
 }
 
 message Request {}
@@ -39,4 +40,10 @@ message ExpectationSuitesList {
 message CreateExpectationSuiteRequest {
   string file_path = 1;
   string suite_name = 2;
+}
+
+message RunValidationRequest {
+  string datasource = 1;
+  string table = 2;
+  string suite_name = 3;
 }

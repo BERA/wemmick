@@ -52,6 +52,15 @@ class Wemmick(wemmick_pb2_grpc.WemmickServicer):
         create_suite.run()
         return wemmick_pb2.Response(message=f'Successfully created {request.suite_name} expectation suite')
 
+    def RunValidation(self, request, context):
+        run_validation = wemmick.api.RunValidation(
+            datasource=request.datasource,
+            table=request.table,
+            suite_name=request.suite_name
+        )
+        run_validation.run()
+        return wemmick_pb2.Response(message=f'Successfully ran {request.suite_name} validation')
+
 
 def serve():
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))

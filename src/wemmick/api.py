@@ -111,3 +111,38 @@ class CreateExpectationSuiteFromJsonSchema:
         self.create_suite(context, json_schema, self.suite_name)
         self.build_docs(context)
         self.open_docs(context)
+
+
+class RunValidation:
+    def __init__(self, datasource: str, table: str, suite_name: str):
+        self.datasource = datasource
+        self.table = table
+        self.suite_name = suite_name
+        self.data_context = self.get_data_context()
+
+    def get_data_context(self):
+        return get_data_context()
+
+    def get_batch(self):
+        batch_kwargs = {"table": self.table, "datasource": self.datasource}
+        return self.data_context.get_batch(batch_kwargs, self.suite_name)
+
+    def run_validation_operator(self, batch):
+        return self.data_context.run_validation_operator(
+            "action_list_operator", assets_to_validate=[batch],
+        )
+
+    def on_success(self):
+        pass
+
+    def on_failure(self):
+        pass
+
+    def run(self):
+        batch = self.get_batch()
+        results = self.run_validation_operator(batch)
+
+        if not results["success"]:
+            self.on_failure()
+        else:
+            self.on_success()

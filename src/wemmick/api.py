@@ -10,7 +10,7 @@ from wemmick.utils import file_relative_path, get_file
 
 def get_data_context():
     try:
-        context = ge.data_context.DataContext()
+        context = ge.DataContext()
         return context
     except ge.exceptions.GreatExpectationsError as e:
         raise Exception(f"Failed to load GE data context: {e}")

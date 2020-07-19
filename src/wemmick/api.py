@@ -13,7 +13,7 @@ def get_data_context():
         context = ge.data_context.DataContext()
         return context
     except ge.exceptions.GreatExpectationsError as e:
-        raise Exception(f'Failed to load GE data context: {e}')
+        raise Exception(f"Failed to load GE data context: {e}")
 
 
 def list_datasources():
@@ -83,7 +83,7 @@ class CreateExpectationSuiteFromJsonSchema:
             context = ge.data_context.DataContext()
             return context
         except ge.exceptions.GreatExpectationsError as e:
-            raise Exception(f'Failed to load GE data context: {e}')
+            raise Exception(f"Failed to load GE data context: {e}")
 
     def get_json_schema(self):
         raw_file = get_file(self.file_path)
@@ -92,7 +92,7 @@ class CreateExpectationSuiteFromJsonSchema:
             json_schema = json.loads(raw_file)
             return json_schema
         except json.decoder.JSONDecodeError as e:
-            raise Exception(f'Failed to parse JSON file: {e}')
+            raise Exception(f"Failed to parse JSON file: {e}")
 
     def create_suite(self, context, json_schema: str, suite_name: str):
         profiler = JsonSchemaProfiler()

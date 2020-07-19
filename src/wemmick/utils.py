@@ -25,10 +25,10 @@ def get_file(path: str):
     scheme = get_scheme(path)
 
     if scheme == "s3":
-        #TODO: add AWS S3 support
+        # TODO: add AWS S3 support
         pass
     elif scheme == "gs":
-        #TODO: add GCP Bucket support
+        # TODO: add GCP Bucket support
         pass
     elif scheme == "file":
         file_path = urlparse(path).path
@@ -38,4 +38,6 @@ def get_file(path: str):
         return raw_file
 
     else:
-        raise ValueError(f'Invalid scheme "{scheme}", supported schemes are s3, gcp, and file')
+        raise ValueError(
+            f'Invalid scheme "{scheme}", supported schemes are s3, gcp, and file'
+        )

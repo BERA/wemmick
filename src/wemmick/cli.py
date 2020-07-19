@@ -23,6 +23,7 @@ app.add_typer(
     jsonschema, name="jsonschema", help="Create suites from JSONSschema files."
 )
 
+
 @avro.command(name="file")
 def avro_file(filename: str, verbose: bool = False):
     """Create an Expectation Suite from an avro schema file."""
@@ -84,7 +85,9 @@ class CLICreateExpectationSuiteFromJsonSchema(CreateExpectationSuiteFromJsonSche
     def create_suite(self, context, json_schema: str, suite_name: str):
         typer.echo("Generating suite...")
         with click_spinner.spinner():
-            super().create_suite(context, json_schema=json_schema, suite_name=suite_name)
+            super().create_suite(
+                context, json_schema=json_schema, suite_name=suite_name
+            )
 
     def build_docs(self, context):
         typer.echo("Building docs...")
@@ -95,7 +98,9 @@ class CLICreateExpectationSuiteFromJsonSchema(CreateExpectationSuiteFromJsonSche
 @jsonschema.command(name="file")
 def json_file(filename: str, suite_name: str, verbose: bool = False):
     """Create an Expectation Suite from a JSONSchema file."""
-    create_suite = CLICreateExpectationSuiteFromJsonSchema(json_file_path=filename, suite_name=suite_name)
+    create_suite = CLICreateExpectationSuiteFromJsonSchema(
+        json_file_path=filename, suite_name=suite_name
+    )
     create_suite.run()
 
 
@@ -107,7 +112,9 @@ class CLIRunValidation(RunValidation):
         return data_context
 
     def get_batch(self):
-        typer.echo(f"Loading batch from datasource: {self.datasource} table: {self.table}...")
+        typer.echo(
+            f"Loading batch from datasource: {self.datasource} table: {self.table}..."
+        )
         with click_spinner.spinner():
             batch = super().get_batch()
         return batch
@@ -134,7 +141,9 @@ def validate(
     table: str = typer.Option(..., "--table", "-t", help="table name"),
     suite: str = typer.Option(..., "--suite", "-s", help="expectation suite name"),
 ):
-    run_validation = CLIRunValidation(datasource=datasource, table=table, suite_name=suite)
+    run_validation = CLIRunValidation(
+        datasource=datasource, table=table, suite_name=suite
+    )
     run_validation.run()
 
 

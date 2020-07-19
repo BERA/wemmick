@@ -25,7 +25,7 @@ If using docker substitute `docker run -v "$(pwd):/ge" beradev/wemmick:latest` f
     ```bash
     wemmick validate \
     --datasource release \
-    --table resp
+    --table resp \
     --suite resp.warning
     ```
 
@@ -43,6 +43,25 @@ If using docker substitute `docker run -v "$(pwd):/ge" beradev/wemmick:ge-0.11.7
 - Editing expectations suite: `great_expectations suite edit <SUITE_NAME>`
 - Adding a new checkpoint: `great_expectations checkpoint new <CHECKPOINT_NAME> <SUITE_NAME>`
 - Run a checkpoint: `great_expectations checkpoint run <CHECKPOINT_NAME>`
+
+## Wemmick gRPC interface
+
+See [wemmick.proto]("src/wemmick/protos/wemmick.proto") for interface definitions.
+
+Examples of running Wemmick operations using [grpcurl](https://github.com/fullstorydev/grpcurl) hosted locally on port 50051
+
+- Create a suite from a JSON Schema file: `grpcurl -plaintext -d '{"file_path": "file:///example.json", "suite_name": "example"}' localhost:50051 wemmick.Wemmick.CreateExpectationSuiteFromJsonSchema`
+- Create a suite from a AVRO Schema file: `grpcurl -plaintext -d '{"file_path": "file:///example.avsc", "suite_name": "example"}' localhost:50051 wemmick.Wemmick.CreateExpectationSuiteFromAvroSchema`
+- Run a validation: `grpcurl -plaintext -d '{"datasource": "release", "table": "resp", "suite_name": "resp.warning"}' localhost:50051 wemmick.Wemmick.RunValidation`
+
+## Great Expectations gRPC interace
+
+See [wemmick.proto]("src/wemmick/protos/wemmick.proto") for interface definitions.
+
+Examples of running Great Expectation operations using [grpcurl](https://github.com/fullstorydev/grpcurl) hosted locally on port 50051
+
+- List datasources: `grpcurl -plaintext localhost:50051 wemmick.Wemmick/ListDataSources`
+- List expectation suites: `grpcurl -plaintext localhost:50051 wemmick.Wemmick/ListExpectationSuites`
 
 ## Docker images
 

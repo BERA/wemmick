@@ -79,11 +79,7 @@ class CreateExpectationSuiteFromJsonSchema:
         self.suite_name = suite_name
 
     def get_data_context(self):
-        try:
-            context = ge.data_context.DataContext()
-            return context
-        except ge.exceptions.GreatExpectationsError as e:
-            raise Exception(f"Failed to load GE data context: {e}")
+        return get_data_context()
 
     def get_json_schema(self):
         raw_file = get_file(self.file_path)

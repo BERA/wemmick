@@ -99,7 +99,7 @@ class CLICreateExpectationSuiteFromJsonSchema(CreateExpectationSuiteFromJsonSche
 def json_file(filename: str, suite_name: str, verbose: bool = False):
     """Create an Expectation Suite from a JSONSchema file."""
     create_suite = CLICreateExpectationSuiteFromJsonSchema(
-        json_file_path=filename, suite_name=suite_name
+        file_path=filename, suite_name=suite_name
     )
     create_suite.run()
 

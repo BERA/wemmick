@@ -21,9 +21,15 @@ def get_scheme(path: str):
     return urlparse(path).scheme
 
 
+def check_file_exists(path):
+    if not os.path.isfile(path):
+        raise ValueError(
+            f"File {path} was not found. Please check the path and try again."
+        )
+
+
 def get_file(path: str):
     scheme = get_scheme(path)
-
     if scheme == "s3":
         # TODO: add AWS S3 support
         pass
@@ -32,11 +38,12 @@ def get_file(path: str):
         pass
     elif scheme == "file":
         file_path = urlparse(path).path
+        check_file_exists(file_path)
+
         with open(file_path, "r") as f:
             raw_file = f.read()
 
         return raw_file
-
     else:
         raise ValueError(
             f'Invalid scheme "{scheme}", supported schemes are s3, gcp, and file'

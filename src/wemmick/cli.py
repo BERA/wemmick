@@ -101,7 +101,13 @@ def json_file(filename: str, suite_name: str, verbose: bool = False):
     create_suite = CLICreateExpectationSuiteFromJsonSchema(
         file_path=filename, suite_name=suite_name
     )
-    create_suite.run()
+    try:
+        create_suite.run()
+    except ValueError as e:
+        typer.secho(
+            str(e), fg=typer.colors.BRIGHT_RED,
+        )
+        raise typer.Abort()
 
 
 class CLIRunValidation(RunValidation):

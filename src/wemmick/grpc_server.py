@@ -15,14 +15,10 @@ class Wemmick(wemmick_pb2_grpc.WemmickServicer):
         data_sources = wemmick.api.list_datasources()
         result = []
         for data_source_item in data_sources:
-            credentials = wemmick_pb2.DataSource.Credentials(
-                connection_string=data_source_item['credentials']['connection_string']
-            )
             data_source = wemmick_pb2.DataSource(
                 name=data_source_item['name'],
                 class_name=data_source_item['class_name'],
-                module_name=data_source_item['module_name'],
-                credentials=credentials
+                module_name=data_source_item['module_name']
             )
             result.append(data_source)
 

@@ -19,14 +19,9 @@ message Response {
 }
 
 message DataSource {
-  message Credentials {
-    string connection_string = 1;
-  };
-
   string name = 1;
   string class_name = 2;
   string module_name = 3;
-  Credentials credentials = 4;
 }
 
 message DataSourceList {

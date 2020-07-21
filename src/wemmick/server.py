@@ -8,6 +8,7 @@ great_expectations DataContext.
 
 https://cloud.google.com/run/docs/reference/container-contract#port
 """
+from typing import List
 
 import great_expectations as ge
 from fastapi import BackgroundTasks, FastAPI, HTTPException
@@ -34,21 +35,25 @@ def health():
 
 
 @app.get("/datasources")
-def datasource_list():
+def datasource_list() -> List[str]:
     context = load_ge_datacontext()
-    return {"datasources": context.list_datasources()}
+    datasource_names = [datasource["name"] for datasource in context.list_datasources()]
+    return datasource_names
 
 
 @app.get("/suites")
-def suite_list():
+def suite_list() -> List[str]:
     context = load_ge_datacontext()
-    return {"datasources": context.list_expectation_suites()}
+    suite_names = [
+        suite.expectation_suite_name for suite in context.list_expectation_suites()
+    ]
+    return suite_names
 
 
 @app.get("/checkpoints")
 def checkpoint_list():
     context = load_ge_datacontext()
-    return {"checkpoints": context.list_checkpoints()}
+    return context.list_checkpoints()
 
 
 @app.get("/validate")

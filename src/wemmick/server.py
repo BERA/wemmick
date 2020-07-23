@@ -11,6 +11,7 @@ https://cloud.google.com/run/docs/reference/container-contract#port
 from typing import List
 
 import great_expectations as ge
+import sqlalchemy
 from fastapi import BackgroundTasks, FastAPI, HTTPException
 from great_expectations.data_asset import DataAsset
 from great_expectations.exceptions import DataContextError
@@ -68,10 +69,15 @@ async def validate(
     try:
         batch = context.get_batch(batch_kwargs, suite)
         assert isinstance(batch, DataAsset)
+    except sqlalchemy.exc.NoSuchTableError:
+        raise HTTPException(
+            status_code=404,
+            detail=f"The table {table} could not be found. Please verify datasource and table.",
+        )
     except AssertionError:
         raise HTTPException(
             status_code=404,
-            detail=f"The batch failed to load. Please verify datasource, table and suite.",
+            detail="The batch failed to load. Please verify datasource, table and suite.",
         )
     except DataContextError as e:
         raise HTTPException(status_code=404, detail=str(e))

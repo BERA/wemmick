@@ -65,18 +65,12 @@ def mock_get_data_context():
 
 
 def test_json_file_raises_error_if_file_not_found(mocker):
-    mocker.patch(
-        'wemmick.api.get_data_context',
-        mock_get_data_context
-    )
+    mocker.patch("wemmick.api.get_data_context", mock_get_data_context)
     with pytest.raises(typer.Abort):
         json_file("file://foo.json", "foo")
 
 
 def test_avro_file_raises_error_if_file_not_found(mocker):
-    mocker.patch(
-        'wemmick.api.get_data_context',
-        mock_get_data_context
-    )
+    mocker.patch("wemmick.api.get_data_context", mock_get_data_context)
     with pytest.raises(typer.Abort):
         avro_file("file://foo.json")

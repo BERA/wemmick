@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "052b70d96c104ad40a52364aa61815ffc5d492a9dc12cbd02cb04ec66fd83c3a"
+            "sha256": "036af19504caf3bf04bb64aa40d3dbb936d0a2c91be733d807006ec8157d390b"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -60,10 +60,10 @@
         },
         "google-api-core": {
             "hashes": [
-                "sha256:7b65e8e5ee59bd7517eab2bf9b3008e7b50fd9fb591d4efd780ead6859cd904b",
-                "sha256:fea9a434068406ddabe2704988d24d6c5bde3ecfc40823a34f43892d017b14f6"
+                "sha256:aaedc40ae977dbc2710f0de0012b673c8c7644f81ca0c93e839d22895f2ff29d",
+                "sha256:c4e3b3d914e09d181287abb7101b42f308204fa5e8f89efc4839f607303caa2f"
             ],
-            "version": "==1.21.0"
+            "version": "==1.22.0"
         },
         "google-auth": {
             "hashes": [
@@ -82,10 +82,10 @@
         },
         "google-cloud-bigquery": {
             "hashes": [
-                "sha256:7466163fa6bd9c923944c566dcafa5191214db8896657ee5feb1859a63e0ba2a",
-                "sha256:be035d9cbcce907bee971861567848384748a88977d1ad608e7818da283e6c14"
+                "sha256:6d48d8265a248c1e87a809cebb627fc65fe798572c1d14d85779fe52a31c4fcf",
+                "sha256:bb674b0c488dc38708564456aa5f7c7326c1f913368635cf1d419c2a70047d33"
             ],
-            "version": "==1.25.0"
+            "version": "==1.26.0"
         },
         "google-cloud-core": {
             "hashes": [
@@ -293,10 +293,10 @@
         },
         "urllib3": {
             "hashes": [
-                "sha256:3018294ebefce6572a474f0604c2021e33b3fd8006ecd11d62107a5d2a963527",
-                "sha256:88206b0eb87e6d677d424843ac5209e3fb9d0190d0ee169599165ec25e9d9115"
+                "sha256:91056c15fa70756691db97756772bb1eb9678fa585d9184f24534b100dc60f4a",
+                "sha256:e7983572181f5e1522d9c98453462384ee92a0be7fac5f1413a1e35c56cc0461"
             ],
-            "version": "==1.25.9"
+            "version": "==1.25.10"
         }
     },
     "develop": {
@@ -481,6 +481,14 @@
             ],
             "index": "pypi",
             "version": "==5.4.3"
+        },
+        "pytest-mock": {
+            "hashes": [
+                "sha256:5564c7cd2569b603f8451ec77928083054d8896046830ca763ed68f4112d17c7",
+                "sha256:7122d55505d5ed5a6f3df940ad174b3f606ecae5e9bc379569cdcbd4cd9d2b83"
+            ],
+            "index": "pypi",
+            "version": "==3.2.0"
         },
         "six": {
             "hashes": [

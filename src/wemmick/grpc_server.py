@@ -11,7 +11,8 @@ class Wemmick(wemmick_pb2_grpc.WemmickServicer):
         return wemmick_pb2.Response(message="Hello World!")
 
     def ListDataSources(self, request, context):
-        data_sources = wemmick.api.list_datasources()
+        data_context = wemmick.api.get_data_context()
+        data_sources = wemmick.api.list_datasources(data_context=data_context)
         result = []
         for data_source_item in data_sources:
             data_source = wemmick_pb2.DataSource(
@@ -24,7 +25,8 @@ class Wemmick(wemmick_pb2_grpc.WemmickServicer):
         return wemmick_pb2.DataSourceList(data_sources=result)
 
     def ListExpectationSuites(self, request, context):
-        suites = wemmick.api.list_expectation_suites()
+        data_context = wemmick.api.get_data_context()
+        suites = wemmick.api.list_expectation_suites(data_context=data_context)
         result = []
         for suite_item in suites:
             result.append(suite_item.expectation_suite_name)
@@ -32,8 +34,11 @@ class Wemmick(wemmick_pb2_grpc.WemmickServicer):
         return wemmick_pb2.ExpectationSuitesList(expectation_suites=result)
 
     def CreateExpectationSuiteFromJsonSchema(self, request, context):
+        data_context = wemmick.api.get_data_context()
         create_suite = wemmick.api.CreateExpectationSuiteFromJsonSchema(
-            file_path=request.file_path, suite_name=request.suite_name
+            file_path=request.file_path,
+            suite_name=request.suite_name,
+            data_context=data_context,
         )
         create_suite.run()
         return wemmick_pb2.Response(
@@ -41,8 +46,11 @@ class Wemmick(wemmick_pb2_grpc.WemmickServicer):
         )
 
     def CreateExpectationSuiteFromAvroSchema(self, request, context):
+        data_context = wemmick.api.get_data_context()
         create_suite = wemmick.api.CreateExpectationSuiteFromAvroSchema(
-            file_path=request.file_path, suite_name=request.suite_name
+            file_path=request.file_path,
+            suite_name=request.suite_name,
+            data_context=data_context,
         )
         create_suite.run()
         return wemmick_pb2.Response(
@@ -50,10 +58,13 @@ class Wemmick(wemmick_pb2_grpc.WemmickServicer):
         )
 
     def RunValidation(self, request, context):
+        data_context = wemmick.api.get_data_context()
+
         run_validation = wemmick.api.RunValidation(
             datasource=request.datasource,
             table=request.table,
             suite_name=request.suite_name,
+            data_context=data_context,
         )
         run_validation.run()
         return wemmick_pb2.Response(

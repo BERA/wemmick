@@ -27,3 +27,21 @@ def basic_data_context_config():
 @pytest.fixture(scope="module")
 def basic_in_memory_data_context(basic_data_context_config):
     return BaseDataContext(basic_data_context_config)
+
+
+@pytest.fixture(scope="module")
+def basic_json_schema_object():
+    return {
+        "description": "Test table",
+        "type": "object",
+        "properties": {
+            "rating": {
+                "description": "Rating on a scale of 1 to 7",
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 7,
+            }
+        },
+        "required": ["rating"],
+        "$schema": "http://json-schema.org/draft-07/schema#",
+    }

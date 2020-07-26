@@ -86,39 +86,6 @@ class CreateExpectationSuiteFromJsonSchema(ProfilerCreateExpectationSuiteBaseCla
         return JsonSchemaProfiler()
 
 
-# class CreateExpectationSuiteFromJsonSchema:
-#     def __init__(self, file_path: str, suite_name: str, data_context):
-#         self.file_path = file_path
-#         self.suite_name = suite_name
-#         self.data_context = data_context
-#
-#     def get_json_schema(self):
-#         raw_file = get_file(self.file_path)
-#
-#         try:
-#             json_schema = json.loads(raw_file)
-#             return json_schema
-#         except json.decoder.JSONDecodeError as e:
-#             raise Exception(f"Failed to parse JSON file: {e}")
-#
-#     def create_suite(self, json_schema: str, suite_name: str):
-#         profiler = JsonSchemaProfiler()
-#         suite = profiler.profile(json_schema, suite_name)
-#         self.data_context.save_expectation_suite(suite)
-#
-#     def build_docs(self):
-#         self.data_context.build_data_docs()
-#
-#     def open_docs(self):
-#         self.data_context.open_data_docs()
-#
-#     def run(self):
-#         json_schema = self.get_json_schema()
-#         self.create_suite(json_schema, self.suite_name)
-#         self.build_docs()
-#         self.open_docs()
-
-
 class RunValidation:
     def __init__(self, datasource: str, table: str, suite_name: str, data_context):
         self.datasource = datasource

@@ -5,7 +5,7 @@ from abc import ABC, abstractmethod
 import great_expectations as ge
 from great_expectations.profile.json_schema_profiler import JsonSchemaProfiler
 from wemmick.avro_schema_profiler import AvroSchemaFileProfiler
-from wemmick.utils import file_relative_path, get_file
+from wemmick.utils import check_file_exists, get_file
 
 
 def get_data_context():
@@ -58,7 +58,9 @@ class ProfilerCreateExpectationSuiteBaseClass(ABC):
 
 class CreateExpectationSuiteFromAvroSchema(ProfilerCreateExpectationSuiteBaseClass):
     def get_schema(self):
-        return urlparse(self.file_path).path
+        file_path = urlparse(self.file_path).path
+        check_file_exists(file_path)
+        return file_path
 
     def get_profiler(self):
         return AvroSchemaFileProfiler(verbose=False)

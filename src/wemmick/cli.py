@@ -156,8 +156,9 @@ def validate(
     table: str = typer.Option(..., "--table", "-t", help="table name"),
     suite: str = typer.Option(..., "--suite", "-s", help="expectation suite name"),
 ):
+    data_context = get_data_context()
     run_validation = CLIRunValidation(
-        datasource=datasource, table=table, suite_name=suite
+        datasource=datasource, table=table, suite_name=suite, data_context=data_context
     )
     run_validation.run()
 

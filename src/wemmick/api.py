@@ -10,27 +10,25 @@ from wemmick.utils import file_relative_path, get_file
 
 def get_data_context():
     try:
-        context = ge.DataContext()
-        return context
+        data_context = ge.DataContext()
+        return data_context
     except ge.exceptions.GreatExpectationsError as e:
         raise Exception(f"Failed to load GE data context: {e}")
 
 
-def list_datasources():
-    context = get_data_context()
-    return context.list_datasources()
+def list_datasources(data_context):
+    return data_context.list_datasources()
 
 
-def list_expectation_suites():
-    context = get_data_context()
-    return context.list_expectation_suites()
+def list_expectation_suites(data_context):
+    return data_context.list_expectation_suites()
 
 
 class ProfilerCreateExpectationSuiteBaseClass(ABC):
-    def __init__(self, file_path: str, suite_name: str = None, data_context=None):
+    def __init__(self, data_context, file_path: str, suite_name: str = None):
         self.file_path = file_path
         self.suite_name = suite_name if suite_name else os.path.basename(file_path)
-        self.data_context = data_context if data_context else get_data_context()
+        self.data_context = data_context
 
     @abstractmethod
     def get_schema(self):
@@ -63,8 +61,7 @@ class CreateExpectationSuiteFromAvroSchema(ProfilerCreateExpectationSuiteBaseCla
         return urlparse(self.file_path).path
 
     def get_profiler(self):
-        base_dir = file_relative_path(__file__, ".")
-        return AvroSchemaFileProfiler(base_directory=base_dir, verbose=True)
+        return AvroSchemaFileProfiler(verbose=False)
 
     def create_suite(self):
         profiler = self.get_profiler()
@@ -73,15 +70,8 @@ class CreateExpectationSuiteFromAvroSchema(ProfilerCreateExpectationSuiteBaseCla
         self.data_context.save_expectation_suite(suite)
 
 
-class CreateExpectationSuiteFromJsonSchema:
-    def __init__(self, file_path: str, suite_name: str):
-        self.file_path = file_path
-        self.suite_name = suite_name
-
-    def get_data_context(self):
-        return get_data_context()
-
-    def get_json_schema(self):
+class CreateExpectationSuiteFromJsonSchema(ProfilerCreateExpectationSuiteBaseClass):
+    def get_schema(self):
         raw_file = get_file(self.file_path)
 
         try:
@@ -90,34 +80,49 @@ class CreateExpectationSuiteFromJsonSchema:
         except json.decoder.JSONDecodeError as e:
             raise Exception(f"Failed to parse JSON file: {e}")
 
-    def create_suite(self, context, json_schema: str, suite_name: str):
-        profiler = JsonSchemaProfiler()
-        suite = profiler.profile(json_schema, suite_name)
-        context.save_expectation_suite(suite)
+    def get_profiler(self):
+        return JsonSchemaProfiler()
 
-    def build_docs(self, context):
-        context.build_data_docs()
 
-    def open_docs(self, context):
-        context.open_data_docs()
-
-    def run(self):
-        context = self.get_data_context()
-        json_schema = self.get_json_schema()
-        self.create_suite(context, json_schema, self.suite_name)
-        self.build_docs(context)
-        self.open_docs(context)
+# class CreateExpectationSuiteFromJsonSchema:
+#     def __init__(self, file_path: str, suite_name: str, data_context):
+#         self.file_path = file_path
+#         self.suite_name = suite_name
+#         self.data_context = data_context
+#
+#     def get_json_schema(self):
+#         raw_file = get_file(self.file_path)
+#
+#         try:
+#             json_schema = json.loads(raw_file)
+#             return json_schema
+#         except json.decoder.JSONDecodeError as e:
+#             raise Exception(f"Failed to parse JSON file: {e}")
+#
+#     def create_suite(self, json_schema: str, suite_name: str):
+#         profiler = JsonSchemaProfiler()
+#         suite = profiler.profile(json_schema, suite_name)
+#         self.data_context.save_expectation_suite(suite)
+#
+#     def build_docs(self):
+#         self.data_context.build_data_docs()
+#
+#     def open_docs(self):
+#         self.data_context.open_data_docs()
+#
+#     def run(self):
+#         json_schema = self.get_json_schema()
+#         self.create_suite(json_schema, self.suite_name)
+#         self.build_docs()
+#         self.open_docs()
 
 
 class RunValidation:
-    def __init__(self, datasource: str, table: str, suite_name: str):
+    def __init__(self, datasource: str, table: str, suite_name: str, data_context):
         self.datasource = datasource
         self.table = table
         self.suite_name = suite_name
-        self.data_context = self.get_data_context()
-
-    def get_data_context(self):
-        return get_data_context()
+        self.data_context = data_context
 
     def get_batch(self):
         batch_kwargs = {"table": self.table, "datasource": self.datasource}

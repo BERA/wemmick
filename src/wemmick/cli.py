@@ -13,7 +13,12 @@ from pygments.lexers.data import JsonLexer
 
 from wemmick.utils import file_relative_path
 from wemmick.avro_schema_profiler import AvroSchemaFileProfiler
-from wemmick.api import CreateExpectationSuiteFromJsonSchema, RunValidation
+from wemmick.api import (
+    CreateExpectationSuiteFromJsonSchema,
+    CreateExpectationSuiteFromAvroSchema,
+    RunValidation,
+)
+import wemmick.api
 
 app = typer.Typer()
 avro = typer.Typer()
@@ -24,30 +29,46 @@ app.add_typer(
 )
 
 
+def get_data_context():
+    typer.echo("Loading Great Expectations project...")
+    with click_spinner.spinner():
+        data_context = wemmick.api.get_data_context()
+    return data_context
+
+
+class CLICreateExpectationSuiteFromAvroSchema(CreateExpectationSuiteFromAvroSchema):
+    def get_schema(self):
+        typer.echo("Loading schema...")
+        with click_spinner.spinner():
+            avro_schema = super().get_schema()
+        return avro_schema
+
+    def create_suite(self):
+        typer.echo("Generating suite...")
+        with click_spinner.spinner():
+            super().create_suite()
+
+    def build_docs(self):
+        typer.echo("Building docs...")
+        with click_spinner.spinner():
+            super().build_docs()
+
+
 @avro.command(name="file")
 def avro_file(filename: str, verbose: bool = False):
     """Create an Expectation Suite from an avro schema file."""
-    if not os.path.isfile(filename):
+    data_context = get_data_context()
+
+    create_suite = CLICreateExpectationSuiteFromAvroSchema(
+        file_path=filename, data_context=data_context
+    )
+    try:
+        create_suite.run()
+    except ValueError as e:
         typer.secho(
-            f"File {filename} was not found. Please check the path and try again.",
-            fg=typer.colors.BRIGHT_RED,
+            str(e), fg=typer.colors.BRIGHT_RED,
         )
         raise typer.Abort()
-
-    typer.echo(f"Profiling {filename}..")
-    with click_spinner.spinner():
-        context = ge.DataContext()
-        base_dir = file_relative_path(__file__, ".")
-        profiler = AvroSchemaFileProfiler(
-            base_directory=base_dir, verbose=verbose, printer=typer.echo
-        )
-        suites = profiler.run(filename=filename)
-
-        for suite in suites:
-            typer.echo(f"Saving expectation suite {suite.expectation_suite_name}")
-            context.save_expectation_suite(suite)
-
-    typer.secho(f"Processed {len(suites)} avro files.", fg=typer.colors.BRIGHT_GREEN)
 
 
 @avro.command(name="glob")
@@ -70,36 +91,30 @@ def avro_glob(pattern: str, verbose: bool = False):
 
 # TODO: add missing functionality that was present in cli code that was refactored
 class CLICreateExpectationSuiteFromJsonSchema(CreateExpectationSuiteFromJsonSchema):
-    def get_data_context(self):
-        typer.echo("Loading Great Expectations project...")
-        with click_spinner.spinner():
-            data_context = super().get_data_context()
-        return data_context
-
-    def get_json_schema(self):
+    def get_schema(self):
         typer.echo("Loading schema...")
         with click_spinner.spinner():
-            json_schema = super().get_json_schema()
+            json_schema = super().get_schema()
         return json_schema
 
-    def create_suite(self, context, json_schema: str, suite_name: str):
+    def create_suite(self):
         typer.echo("Generating suite...")
         with click_spinner.spinner():
-            super().create_suite(
-                context, json_schema=json_schema, suite_name=suite_name
-            )
+            super().create_suite()
 
-    def build_docs(self, context):
+    def build_docs(self):
         typer.echo("Building docs...")
         with click_spinner.spinner():
-            super().build_docs(context)
+            super().build_docs()
 
 
 @jsonschema.command(name="file")
 def json_file(filename: str, suite_name: str, verbose: bool = False):
     """Create an Expectation Suite from a JSONSchema file."""
+    data_context = get_data_context()
+
     create_suite = CLICreateExpectationSuiteFromJsonSchema(
-        file_path=filename, suite_name=suite_name
+        file_path=filename, suite_name=suite_name, data_context=data_context
     )
     try:
         create_suite.run()
@@ -111,12 +126,6 @@ def json_file(filename: str, suite_name: str, verbose: bool = False):
 
 
 class CLIRunValidation(RunValidation):
-    def get_data_context(self):
-        typer.echo("Loading Great Expectations project...")
-        with click_spinner.spinner():
-            data_context = super().get_data_context()
-        return data_context
-
     def get_batch(self):
         typer.echo(
             f"Loading batch from datasource: {self.datasource} table: {self.table}..."

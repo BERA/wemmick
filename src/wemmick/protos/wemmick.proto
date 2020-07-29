@@ -4,7 +4,7 @@ import "google/protobuf/empty.proto";
 package wemmick;
 
 service Wemmick {
-  rpc HelloWorld (google.protobuf.Empty) returns (Response) {};
+  rpc HealthCheck (google.protobuf.Empty) returns (Response) {};
   rpc ListDataSources (google.protobuf.Empty) returns (DataSourceList) {};
   rpc ListExpectationSuites (google.protobuf.Empty) returns (ExpectationSuitesList) {};
   rpc CreateExpectationSuiteFromJsonSchema (CreateExpectationSuiteRequest) returns (Response) {};

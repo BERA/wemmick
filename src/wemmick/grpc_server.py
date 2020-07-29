@@ -8,8 +8,8 @@ import wemmick.api
 
 
 class Wemmick(wemmick_pb2_grpc.WemmickServicer):
-    def HelloWorld(self, request, context):
-        return wemmick_pb2.Response(message="Hello World!")
+    def HealthCheck(self, request, context):
+        return wemmick_pb2.Response(message="Healthy!")
 
     def ListDataSources(self, request, context):
         data_context = wemmick.api.get_data_context()

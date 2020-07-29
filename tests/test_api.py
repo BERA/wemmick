@@ -1,43 +1,37 @@
 import wemmick.api
 import json
-from great_expectations.data_context.types.resource_identifiers import (
-    ExpectationSuiteIdentifier,
-)
+from great_expectations.core import ExpectationSuite
 
 
-def test_list_datasources(basic_in_memory_data_context):
-    name = "test_sqlalchemy_datasource"
-    class_name = "SqlAlchemyDatasource"
-
-    data_asset_type_config = {
-        "module_name": "custom_sqlalchemy_dataset",
-        "class_name": "CustomSqlAlchemyDataset",
-    }
-    basic_in_memory_data_context.add_datasource(
-        name,
-        class_name=class_name,
-        credentials={
-            "connection_string": "postgresql://user:pass@localhost:5432/database"
-        },
-        data_asset_type_config=data_asset_type_config,
-        batch_kwargs_generators={
-            "default": {"class_name": "TableBatchKwargsGenerator"}
-        },
-        initialize=False,
+def test_list_datasources(mocker, basic_in_memory_data_context):
+    mocked_list_datasources = mocker.patch(
+        "great_expectations.data_context.BaseDataContext.list_datasources",
+        return_value=[],
     )
-
-    result = wemmick.api.list_datasources(basic_in_memory_data_context)
-
-    assert len(result) == 1
-    assert result[0]["name"] == name
-    assert result[0]["class_name"] == class_name
+    wemmick.api.list_datasources(basic_in_memory_data_context)
+    mocked_list_datasources.assert_called_once()
 
 
 def test_CreateExpectationSuiteFromJsonSchema(
-    basic_in_memory_data_context, basic_json_schema_object, tmpdir
+    mocker, basic_in_memory_data_context, basic_json_schema_object, tmpdir
 ):
-    suite_name = "test"
-    suite_identifier = ExpectationSuiteIdentifier(expectation_suite_name=suite_name)
+    suite_name = "mock"
+    mock_suite = ExpectationSuite(suite_name)
+    mocked_profile = mocker.patch(
+        "great_expectations.profile.base.Profiler.profile", return_value=mock_suite,
+    )
+    mocked_save_expectation_suite = mocker.patch(
+        "great_expectations.data_context.BaseDataContext.save_expectation_suite",
+        return_value=None,
+    )
+    mocked_build_data_docs = mocker.patch(
+        "great_expectations.data_context.BaseDataContext.build_data_docs",
+        return_value=None,
+    )
+    mocked_open_data_docs = mocker.patch(
+        "great_expectations.data_context.BaseDataContext.open_data_docs",
+        return_value=None,
+    )
 
     path = tmpdir.mkdir("foo").join(f"{suite_name}.json")
     path.write(json.dumps(basic_json_schema_object))
@@ -47,26 +41,9 @@ def test_CreateExpectationSuiteFromJsonSchema(
         suite_name=suite_name,
         data_context=basic_in_memory_data_context,
     )
-    create_suite.create_suite()
+    create_suite.run()
 
-    expectation_suites = basic_in_memory_data_context.list_expectation_suites()
-    assert len(expectation_suites) == 1
-    assert expectation_suites[0] == suite_identifier
-
-    test_suite = basic_in_memory_data_context.get_expectation_suite(
-        expectation_suite_name=suite_name
-    )
-    assert test_suite.expectation_suite_name == suite_name
-    assert len(test_suite.expectations) == 3
-    assert any(
-        expectation["expectation_type"] == "expect_column_to_exist"
-        for expectation in test_suite.expectations
-    )
-    assert any(
-        expectation["expectation_type"] == "expect_column_values_to_be_in_type_list"
-        for expectation in test_suite.expectations
-    )
-    assert any(
-        expectation["expectation_type"] == "expect_column_values_to_be_between"
-        for expectation in test_suite.expectations
-    )
+    mocked_profile.assert_called_once()
+    mocked_save_expectation_suite.assert_called_once_with(mock_suite)
+    mocked_build_data_docs.assert_called_once()
+    mocked_open_data_docs.assert_called_once()

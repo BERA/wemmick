@@ -99,10 +99,14 @@ This image assumes that your project's root is mounted at `/ge` so Great Expecta
 **To use this image as an HTTP server:**
 - run this with: `docker run -p 8080:8080 -v "$(pwd):/ge" --entrypoint /app/src/wemmick/start_server.py beradev/wemmick:latest`
 
+**To use this image as an gRPC server:**
+- run this with `docker run -p 50051:50051 -v "$(pwd):/ge" --entrypoint /app/src/wemmick/grpc_server.py beradev/wemmick:latest`
+
 #### Building wemmick images
 
-To build the wemmick image:
-    - From the repo root run `docker build -t beradev/wemmick:latest -f wemmick/Dockerfile .`
+To build the wemmick image, run from repo root:
+1. `python -m grpc_tools.protoc -I ./src/wemmick/protos --python_out=./src/wemmick/ --grpc_python_out=./src/wemmick/ ./src/wemmick/protos/wemmick.proto`
+1. `docker build -t beradev/wemmick:latest -f Dockerfile .`
 
 Ideally images are only pushed from CI/CD.
 To push the wemmick image:

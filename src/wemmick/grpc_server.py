@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 from concurrent import futures
 import grpc
 from grpc_reflection.v1alpha import reflection

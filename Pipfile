@@ -8,6 +8,7 @@ pytest = "*"
 grpcio-tools = "*"
 mypy = "*"
 pytest-mock = "*"
+grpcio-testing = "*"
 
 [packages]
 typer = "==0.2.1"

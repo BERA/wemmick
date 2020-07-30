@@ -2,14 +2,13 @@
 from concurrent import futures
 import grpc
 from grpc_reflection.v1alpha import reflection
-import wemmick_pb2
-import wemmick_pb2_grpc
+from wemmick import wemmick_pb2, wemmick_pb2_grpc
 import wemmick.api
 
 
 class Wemmick(wemmick_pb2_grpc.WemmickServicer):
     def HealthCheck(self, request, context):
-        return wemmick_pb2.Response(message="Healthy!")
+        return wemmick_pb2.Response(message="OK!")
 
     def ListDataSources(self, request, context):
         data_context = wemmick.api.get_data_context()

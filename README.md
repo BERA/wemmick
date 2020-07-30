@@ -105,7 +105,7 @@ This image assumes that your project's root is mounted at `/ge` so Great Expecta
 #### Building wemmick images
 
 To build the wemmick image, run from repo root:
-1. `python -m grpc_tools.protoc -I ./src/wemmick/protos --python_out=./src/wemmick/ --grpc_python_out=./src/wemmick/ ./src/wemmick/protos/wemmick.proto`
+1. `(cd src; python -m grpc_tools.protoc -I wemmick/protos --python_out=. --grpc_python_out=. wemmick/protos/wemmick/*.proto)`
 1. `docker build -t beradev/wemmick:latest -f Dockerfile .`
 
 Ideally images are only pushed from CI/CD.

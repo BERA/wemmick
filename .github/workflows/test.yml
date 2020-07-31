@@ -24,9 +24,6 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements-dev.txt
-      - name: Typecheck with mypy
-        run: |
-          mypy src/
       - name: Build gRPC interfaces
         run: |
           cd src && \
@@ -35,6 +32,9 @@ jobs:
             --python_out=. \
             --grpc_python_out=. \
             wemmick/protos/wemmick/*.proto
+      - name: Typecheck with mypy
+        run: |
+          mypy src/
       - name: Install package
         run: |
           pip install -e .

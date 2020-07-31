@@ -12,7 +12,7 @@ jobs:
     steps:
       - name: checkout project
         uses: actions/checkout@v2
-      - name: build ge
+      - name: Build ge
         run: |
           CREATED=$(date --rfc-3339=date)
           GE_VER=$(grep "^great_expectations" requirements-base.txt | cut -d'=' -f3-)
@@ -30,6 +30,10 @@ jobs:
             --build-arg CREATED=$CREATED \
             --build-arg REVISION=$REVISION \
             .
+      - name: Install dev dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements-dev.txt
       - name: Build gRPC interfaces
         run: |
           cd src && \
@@ -38,19 +42,19 @@ jobs:
             --python_out=. \
             --grpc_python_out=. \
             wemmick/protos/wemmick/*.proto
-      - name: build wemmick
+      - name: Build wemmick
         run: |
           docker build --tag wemmick \
             --build-arg GE_VER=$GE_VER \
             --build-arg CREATED=$CREATED \
             --build-arg REVISION=$REVISION \
             .
-      - name: login to Dockerhub
+      - name: Login to Dockerhub
         uses: azure/docker-login@v1
         with:
           username: ${{ secrets.DOCKERIO_USERNAME }}
           password: ${{ secrets.DOCKERIO_PASSWORD }}
-      - name: release
+      - name: Release
         run: |
           GE_VER=$(grep "^great_expectations" requirements-base.txt | cut -d'=' -f3-)
           slugify () {

@@ -20,10 +20,10 @@ jobs:
         uses: actions/setup-python@v2
         with:
           python-version: 3.7
-      - name: Install dev dependencies
+      - name: Install grpcio-tools
         run: |
           python -m pip install --upgrade pip
-          pip install -r requirements-dev.txt
+          pip install grpcio-tools
       - name: Build gRPC interfaces
         run: |
           cd src && \

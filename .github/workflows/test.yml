@@ -27,6 +27,14 @@ jobs:
       - name: Typecheck with mypy
         run: |
           mypy src/
+      - name: Build gRPC interfaces
+        run: |
+          cd src && \
+            python -m grpc_tools.protoc \
+            -I wemmick/protos \
+            --python_out=. \
+            --grpc_python_out=. \
+            wemmick/protos/wemmick/*.proto
       - name: Install package
         run: |
           pip install -e .

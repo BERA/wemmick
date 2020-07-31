@@ -30,6 +30,14 @@ jobs:
             --build-arg CREATED=$CREATED \
             --build-arg REVISION=$REVISION \
             .
+      - name: Build gRPC interfaces
+        run: |
+          cd src && \
+            python -m grpc_tools.protoc \
+            -I wemmick/protos \
+            --python_out=. \
+            --grpc_python_out=. \
+            wemmick/protos/wemmick/*.proto
       - name: build wemmick
         run: |
           docker build --tag wemmick \

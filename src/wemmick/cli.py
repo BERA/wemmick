@@ -1,12 +1,9 @@
 #!/usr/bin/env python
-import json
-import os
 import sys
 
 import click_spinner
 import great_expectations as ge
 import typer
-from great_expectations.profile.json_schema_profiler import JsonSchemaProfiler
 from pygments import highlight
 from pygments.formatters.terminal256 import Terminal256Formatter
 from pygments.lexers.data import JsonLexer
@@ -89,7 +86,6 @@ def avro_glob(pattern: str, verbose: bool = False):
     typer.secho(f"Processed {len(suites)} avro files.", fg=typer.colors.BRIGHT_GREEN)
 
 
-# TODO: add missing functionality that was present in cli code that was refactored
 class CLICreateExpectationSuiteFromJsonSchema(CreateExpectationSuiteFromJsonSchema):
     def get_schema(self):
         typer.echo("Loading schema...")

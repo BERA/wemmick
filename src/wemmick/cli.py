@@ -60,7 +60,7 @@ def avro_file(filename: str, verbose: bool = False):
     data_context = get_data_context()
 
     create_suite = CLICreateExpectationSuiteFromAvroSchema(
-        file_path=filename, data_context=data_context
+        file_path=filename, data_context=data_context, verbose=verbose
     )
     try:
         create_suite.run()
@@ -107,6 +107,9 @@ class CLICreateExpectationSuiteFromJsonSchema(CreateExpectationSuiteFromJsonSche
         with click_spinner.spinner():
             super().build_docs()
 
+    def verbose_print(self, string):
+        typer.echo(highlight(string, JsonLexer(), Terminal256Formatter()))
+
 
 @jsonschema.command(name="file")
 def json_file(filename: str, suite_name: str, verbose: bool = False):
@@ -114,7 +117,10 @@ def json_file(filename: str, suite_name: str, verbose: bool = False):
     data_context = get_data_context()
 
     create_suite = CLICreateExpectationSuiteFromJsonSchema(
-        file_path=filename, suite_name=suite_name, data_context=data_context
+        file_path=filename,
+        suite_name=suite_name,
+        data_context=data_context,
+        verbose=verbose,
     )
     try:
         create_suite.run()

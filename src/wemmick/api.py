@@ -25,10 +25,17 @@ def list_expectation_suites(data_context):
 
 
 class ProfilerCreateExpectationSuiteBaseClass(ABC):
-    def __init__(self, data_context, file_path: str, suite_name: str = None):
+    def __init__(
+        self,
+        data_context,
+        file_path: str,
+        suite_name: str = None,
+        verbose: bool = False,
+    ):
         self.file_path = file_path
         self.suite_name = suite_name if suite_name else os.path.basename(file_path)
         self.data_context = data_context
+        self.verbose = verbose
 
     @abstractmethod
     def get_schema(self):
@@ -38,10 +45,15 @@ class ProfilerCreateExpectationSuiteBaseClass(ABC):
     def get_profiler(self):
         pass
 
+    def verbose_print(self, string):
+        print(string)
+
     def create_suite(self):
         profiler = self.get_profiler()
         schema = self.get_schema()
         suite = profiler.profile(schema, suite_name=self.suite_name)
+        if self.verbose:
+            self.verbose_print(str(suite))
         self.data_context.save_expectation_suite(suite)
 
     def build_docs(self):
@@ -63,7 +75,7 @@ class CreateExpectationSuiteFromAvroSchema(ProfilerCreateExpectationSuiteBaseCla
         return file_path
 
     def get_profiler(self):
-        return AvroSchemaFileProfiler(verbose=False)
+        return AvroSchemaFileProfiler(verbose=self.verbose)
 
     def create_suite(self):
         profiler = self.get_profiler()
@@ -77,6 +89,8 @@ class CreateExpectationSuiteFromJsonSchema(ProfilerCreateExpectationSuiteBaseCla
         raw_file = get_file(self.file_path)
 
         try:
+            if self.verbose:
+                self.verbose_print(raw_file)
             json_schema = json.loads(raw_file)
             return json_schema
         except json.decoder.JSONDecodeError as e:
@@ -87,11 +101,19 @@ class CreateExpectationSuiteFromJsonSchema(ProfilerCreateExpectationSuiteBaseCla
 
 
 class RunValidation:
-    def __init__(self, datasource: str, table: str, suite_name: str, data_context):
+    def __init__(
+        self,
+        datasource: str,
+        table: str,
+        suite_name: str,
+        data_context,
+        verbose: bool = False,
+    ):
         self.datasource = datasource
         self.table = table
         self.suite_name = suite_name
         self.data_context = data_context
+        self.verbose = verbose
 
     def get_batch(self):
         batch_kwargs = {"table": self.table, "datasource": self.datasource}

@@ -1,0 +1,25 @@
+[[source]]
+name = "pypi"
+url = "https://pypi.org/simple"
+verify_ssl = true
+
+[dev-packages]
+pytest = "*"
+grpcio-tools = "*"
+mypy = "*"
+pytest-mock = "*"
+grpcio-testing = "*"
+
+[packages]
+typer = "==0.2.1"
+click-spinner = "*"
+pygments = "*"
+google-cloud-storage = "*"
+google-cloud = "*"
+sqlalchemy = "*"
+pybigquery = "*"
+grpcio = "*"
+grpcio-reflection = "*"
+
+[requires]
+python_version = "3.7"

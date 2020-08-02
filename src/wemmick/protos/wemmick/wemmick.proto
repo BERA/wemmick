@@ -1,0 +1,44 @@
+syntax = "proto3";
+
+import "google/protobuf/empty.proto";
+package wemmick;
+
+service Wemmick {
+  rpc HealthCheck (google.protobuf.Empty) returns (Response) {};
+  rpc ListDataSources (google.protobuf.Empty) returns (DataSourceList) {};
+  rpc ListExpectationSuites (google.protobuf.Empty) returns (ExpectationSuitesList) {};
+  rpc CreateExpectationSuiteFromJsonSchema (CreateExpectationSuiteRequest) returns (Response) {};
+  rpc CreateExpectationSuiteFromAvroSchema (CreateExpectationSuiteRequest) returns (Response) {};
+  rpc RunValidation (RunValidationRequest) returns (Response) {};
+}
+
+message Request {}
+
+message Response {
+  string message = 1;
+}
+
+message DataSource {
+  string name = 1;
+  string class_name = 2;
+  string module_name = 3;
+}
+
+message DataSourceList {
+  repeated DataSource data_sources = 1;
+}
+
+message ExpectationSuitesList {
+  repeated string expectation_suites = 1;
+}
+
+message CreateExpectationSuiteRequest {
+  string file_path = 1;
+  string suite_name = 2;
+}
+
+message RunValidationRequest {
+  string datasource = 1;
+  string table = 2;
+  string suite_name = 3;
+}

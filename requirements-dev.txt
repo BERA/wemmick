@@ -3,4 +3,7 @@ isort
 black
 pytest
 pytest-coverage
+pytest-mock
 mypy
+grpcio-testing
+grpcio-tools

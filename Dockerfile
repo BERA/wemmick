@@ -48,6 +48,8 @@ LABEL org.opencontainers.image.title="Wemmick"
 WORKDIR /app
 COPY requirements-http.txt requirements-http.txt
 RUN pip install -r requirements-http.txt
+COPY requirements-base.txt requirements-base.txt
+RUN pip install -r requirements-base.txt
 COPY . .
 RUN pip install -e .
 

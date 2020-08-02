@@ -25,7 +25,7 @@ If using docker substitute `docker run -v "$(pwd):/ge" beradev/wemmick:latest` f
     ```bash
     wemmick validate \
     --datasource release \
-    --table resp
+    --table resp \
     --suite resp.warning
     ```
 
@@ -43,6 +43,25 @@ If using docker substitute `docker run -v "$(pwd):/ge" beradev/wemmick:ge-0.11.7
 - Editing expectations suite: `great_expectations suite edit <SUITE_NAME>`
 - Adding a new checkpoint: `great_expectations checkpoint new <CHECKPOINT_NAME> <SUITE_NAME>`
 - Run a checkpoint: `great_expectations checkpoint run <CHECKPOINT_NAME>`
+
+## Wemmick gRPC interface
+
+See [wemmick.proto]("src/wemmick/protos/wemmick.proto") for interface definitions.
+
+Examples of running Wemmick operations using [grpcurl](https://github.com/fullstorydev/grpcurl) hosted locally on port 50051
+
+- Create a suite from a JSON Schema file: `grpcurl -plaintext -d '{"file_path": "file:///example.json", "suite_name": "example"}' localhost:50051 wemmick.Wemmick.CreateExpectationSuiteFromJsonSchema`
+- Create a suite from a AVRO Schema file: `grpcurl -plaintext -d '{"file_path": "file:///example.avsc", "suite_name": "example"}' localhost:50051 wemmick.Wemmick.CreateExpectationSuiteFromAvroSchema`
+- Run a validation: `grpcurl -plaintext -d '{"datasource": "release", "table": "resp", "suite_name": "resp.warning"}' localhost:50051 wemmick.Wemmick.RunValidation`
+
+## Great Expectations gRPC interace
+
+See [wemmick.proto]("src/wemmick/protos/wemmick.proto") for interface definitions.
+
+Examples of running Great Expectation operations using [grpcurl](https://github.com/fullstorydev/grpcurl) hosted locally on port 50051
+
+- List datasources: `grpcurl -plaintext localhost:50051 wemmick.Wemmick/ListDataSources`
+- List expectation suites: `grpcurl -plaintext localhost:50051 wemmick.Wemmick/ListExpectationSuites`
 
 ## Docker images
 
@@ -80,10 +99,14 @@ This image assumes that your project's root is mounted at `/ge` so Great Expecta
 **To use this image as an HTTP server:**
 - run this with: `docker run -p 8080:8080 -v "$(pwd):/ge" --entrypoint /app/src/wemmick/start_server.py beradev/wemmick:latest`
 
+**To use this image as an gRPC server:**
+- run this with `docker run -p 50051:50051 -v "$(pwd):/ge" --entrypoint /app/src/wemmick/grpc_server.py beradev/wemmick:latest`
+
 #### Building wemmick images
 
-To build the wemmick image:
-    - From the repo root run `docker build -t beradev/wemmick:latest -f wemmick/Dockerfile .`
+To build the wemmick image, run from repo root:
+1. `(cd src; python -m grpc_tools.protoc -I wemmick/protos --python_out=. --grpc_python_out=. wemmick/protos/wemmick/*.proto)`
+1. `docker build -t beradev/wemmick:latest -f Dockerfile .`
 
 Ideally images are only pushed from CI/CD.
 To push the wemmick image:

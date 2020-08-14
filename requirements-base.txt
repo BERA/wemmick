@@ -1,4 +1,4 @@
-great_expectations==0.11.9
+great_expectations==0.12.0
 
 # wemmick
 click-spinner==0.1.10

@@ -6,7 +6,6 @@ from typing import Callable, List, Union
 
 from great_expectations.core import (
     ExpectationConfiguration,
-    ExpectationKwargs,
     ExpectationSuite,
 )
 
@@ -95,7 +94,7 @@ class AvroSchemaFileProfiler:
                 subfield_type: Union[str, List[str]] = subfield["type"]
                 if self.verbose:
                     self.print(f"    + {subfield_name}: {subfield_type}")
-                kwargs = ExpectationKwargs(column=subfield_name)
+                kwargs = {"column": subfield_name}
 
                 for expectation_type in [
                     "expect_column_values_to_not_be_null",

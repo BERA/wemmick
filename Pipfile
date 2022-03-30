@@ -11,7 +11,7 @@ pytest-mock = "*"
 grpcio-testing = "*"
 
 [packages]
-typer = "==0.3.1"
+typer = "==0.4.1"
 click-spinner = "*"
 pygments = "*"
 google-cloud-storage = "*"

@@ -1,4 +1,4 @@
-FROM python:3.7-slim-buster as ge
+FROM python:3.10.5-slim-buster as ge
 
 ARG REVISION
 ARG CREATED

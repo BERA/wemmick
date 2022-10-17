@@ -12,7 +12,7 @@ google-cloud-storage==1.30.0
 
 # SQL Drivers
 pybigquery==0.4.15
-sqlalchemy==1.3.18
+sqlalchemy==1.4.42
 
 # gRPC
 grpcio==1.30.0
